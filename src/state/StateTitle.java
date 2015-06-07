@@ -25,7 +25,12 @@ public class StateTitle extends State
     {
         // Background
         Drawing.fillScreen(gfx, 20, 75, 35);
+        Drawing.fillScreen(gfx, 200, 200, 200); // temp to reduce edge issue with Jakken portrait
         gfx.drawImage(Drawing.getImage("logo/titleWide.png"), 0, 100, null);
+        
+        // Temp (Jakken)
+        gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 40, 220, null);
+        gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 40, 220, null);
         
         // Info Pane
         Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/titleFooter1bkg2.png"), 0, 718, 0.8f);
