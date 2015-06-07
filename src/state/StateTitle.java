@@ -3,14 +3,16 @@ package state;
 import app.Application;
 import gfx.Drawing;
 import gfx.Theme;
-import java.awt.Color;
-import ui.Menu;
 import java.awt.Graphics;
+import ui.HintBar;
 
 public class StateTitle extends State
 {
     private int cursorNow, cursorMax;
     private int cursorTickNow, cursorTickMax, cursorFrame;
+    
+    // Interface
+    private HintBar uiInfo;
     
     public StateTitle()
     {
@@ -19,6 +21,15 @@ public class StateTitle extends State
         this.cursorTickNow = 0;
         this.cursorTickMax = 6;
         this.cursorFrame = 1;
+        this.uiInfo = this.getInfo();
+    }
+    
+    public HintBar getInfo()
+    {
+        // NOTE: may want to locate the version and update data elsewhere, where it can be maintained
+        String hint1 = "Shadow Crawler (v0.2) built with Java in Netbeans IDE 8.0.2.";
+        String hint2 = "Last updated  06|06|2015";
+        return new HintBar(hint1, hint2);
     }
     
     public void render(Graphics gfx)
@@ -32,15 +43,8 @@ public class StateTitle extends State
         gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 40, 220, null);
         gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 40, 220, null);
         
-        // Info Pane
-        Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/titleFooter1bkg2.png"), 0, 718, 0.8f);
-        gfx.drawImage(Drawing.getImage("interface/titleFooter1border.png"), 0, 718, null);
-        
-        // Info Text
-        gfx.setFont(Theme.getFont("STANDARD"));
-        gfx.setColor(Theme.getColour("TEXT"));
-        gfx.drawString("Shadow Crawler (v0.2) built with Java in Netbeans IDE 8.0.2.", 36, 752);
-        Drawing.write(gfx, "Last updated  06|06|2015", 1330, 752, "RIGHT");
+        // Info Bar
+        this.uiInfo.render(gfx);
         
         // Options
         gfx.setFont(Theme.getFont("MENUOPTION"));

@@ -4,8 +4,11 @@ import item.ItemWeapon;
 import java.util.ArrayList;
 import mystic.Spell;
 
-public class Character
+public class PartyCharacter
 {
+    // Info
+    private String infoName;
+    
     // Stats
     private int statHealthNow, statHealthMax;
     private int statEnergyNow, statEnergyMax;
@@ -19,9 +22,14 @@ public class Character
     private Spell spellActive;
     private ArrayList<Spell> spellList;
     
-    public Character()
+    public PartyCharacter(String name)
     {
-        
+        this.infoName = name;
+    }
+    
+    public String getInfoName()
+    {
+        return this.infoName;
     }
     
     // NOTE: there should be various unlockable skills to choose from as you level up

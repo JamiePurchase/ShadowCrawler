@@ -24,7 +24,9 @@ public class Theme
         typeface.put("CHATSPEAKER", new Font("Andalus", Font.BOLD, 26));
         typeface.put("CHATSPEECH", new Font("Andalus", Font.PLAIN, 26));
         typeface.put("DAMAGEVISUAL", new Font("Trebuchet MS", Font.PLAIN, 64));
+        typeface.put("MENUNAME", new Font("Andalus", Font.BOLD, 26));
         typeface.put("MENUOPTION", new Font("Trebuchet MS", Font.PLAIN, 32));
+        typeface.put("MENUOPTION", new Font("Trebuchet MS", Font.PLAIN, 22));
         typeface.put("STANDARD", new Font("Andalus", Font.PLAIN, 26));
     }
     

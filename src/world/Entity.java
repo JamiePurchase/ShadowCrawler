@@ -210,17 +210,7 @@ public class Entity
         this.setDirection(direction);
         if(this.moveValid(direction))
         {
-            this.action = "WALK";
-            this.actionTickNow = 0;
-            this.actionTickMax = 6;
-            this.actionFrameNow = 1;
-            //this.actionFrameImg
-            // NOTE: perhaps we should have individual array lists of bufferedImages for each action
-            // NOTE: it may be wise to do attach four (one for each direction)
-            this.actionFrameMax = 8;
-            this.actionRepeat = false;
-            this.actionResume = "IDLE";
-            this.busy = true;
+            this.setAction("WALK");
         }
         //this.moveCollide();
     }
@@ -276,12 +266,28 @@ public class Entity
         }
         
         // Temp
+        if(action.equals("WALK"))
+        {
+            this.action = "WALK";
+            this.actionTickNow = 0;
+            this.actionTickMax = 2;
+            this.actionFrameNow = 1;
+            //this.actionFrameImg
+            // NOTE: perhaps we should have individual array lists of bufferedImages for each action
+            // NOTE: it may be wise to do attach four (one for each direction)
+            this.actionFrameMax = 8;
+            this.actionRepeat = false;
+            this.actionResume = "IDLE";
+            this.busy = true;
+        }
+        
+        // Temp
         if(action.equals("ATTACK"))
         {
             this.action = "ATTACK";
             this.actionHold = false;
             this.actionTickNow = 0;
-            this.actionTickMax = 6;
+            this.actionTickMax = 2;
             this.actionFrameNow = 1;
             this.actionFrameMax = 6;
             this.actionRepeat = false;

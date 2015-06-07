@@ -7,8 +7,9 @@ import gfx.Theme;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import menu.Menu;
+import menu.MenuEquipment;
 import player.Campaign;
-import ui.Menu;
 import world.Board;
 import world.BoardDao;
 
@@ -20,7 +21,6 @@ public class StateBoard extends State
     private boolean pause;
     private BufferedImage pauseBkg;
     private Menu pauseMenu;
-    private String pauseState;
     
     // Chat Display
     private boolean chatRender;
@@ -33,8 +33,6 @@ public class StateBoard extends State
         // Pause Menu
         this.pause = false;
         this.pauseBkg = null;
-        this.pauseMenu = null;
-        this.pauseState = null;
         
         // Chat Display
         this.chatRender = false;
@@ -47,28 +45,29 @@ public class StateBoard extends State
     {
         this.pause = false;
         this.pauseMenu = null;
-        this.pauseState = null;
     }
     
     public void pauseInit()
     {
         this.pause = true;
-        this.pauseMenu = new Menu();
-        this.pauseState = "CHARACTER";
+        this.pauseMenu = new MenuEquipment(this);
     }
     
     public void render(Graphics gfx)
     {
         if(this.pause) {this.renderMenu(gfx);}
-        else {this.board.render(gfx);}
-        
-        // Temp
-        this.renderDisplay(gfx);
-        if(this.chatRender) {this.renderChat(gfx);}
+        else
+        {
+            this.board.render(gfx);
+            //this.renderDisplay(gfx); // NOTE: this needs ALOT of thought and improvment
+            if(this.chatRender) {this.renderChat(gfx);}
+        }
     }
     
     public void renderChat(Graphics gfx)
     {
+        // NOTE: with being DRY in mind, this piece of ui should have its own class
+        
         // Portrait
         gfx.drawImage(Drawing.getImage("portrait/Jakken_Chat.png"), 140, 441, null);
         
@@ -78,13 +77,11 @@ public class StateBoard extends State
         
         // Speaker
         gfx.setFont(Theme.getFont("CHATSPEAKER"));
-        
-        // Temp
         gfx.setColor(Theme.getColour("TEXTSHADOW"));
         gfx.drawString("JAKKEN", 147, 626);
-        
         gfx.setColor(Theme.getColour("TEXT"));
         gfx.drawString("JAKKEN", 145, 625);
+        // NOTE: the shadow effect is not currently available alongside alignment (improve these)
         
         // Speech
         gfx.setFont(Theme.getFont("CHATSPEECH"));
@@ -131,28 +128,13 @@ public class StateBoard extends State
         // Background
         gfx.drawImage(this.board.getTerrainImage(), 0, 0, null);
         
-        // Pane
-        Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/menuPane1bkg.png"), 0, 0, 0.8f);
-        gfx.drawImage(Drawing.getImage("interface/menuPane1border.png"), 0, 0, null);
-        
-        // Contents
-        if(this.pauseState.equals("CHARACTER")) {this.renderMenuCharacter(gfx);}
-    }
-    
-    public void renderMenuCharacter(Graphics gfx)
-    {
-        // Name
-        gfx.setColor(Color.WHITE);
-        Drawing.write(gfx, "JAKKEN", 600, 100, "CENTER");
-        
-        // Portrait
-        gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 400, 100, null);
-        gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 400, 100, null);
+        // Pause Menu
+        this.pauseMenu.render(gfx);
     }
     
     public void tick()
     {
-        if(this.pause) {tickPause();}
+        if(this.pause) {this.pauseMenu.tick();}
         else {tickBoard();}
     }
     
@@ -162,7 +144,7 @@ public class StateBoard extends State
         if(Application.getInputKeyboard().getKeyPressed() != "NONE") {this.tickBoardKey();}
         
         // Board Tick
-        if(!this.pause) {this.board.tick();}
+        this.board.tick();
     }
     
     public void tickBoardKey()
@@ -184,19 +166,6 @@ public class StateBoard extends State
                 this.board.tempPlayer.setAction("ATTACK");
             }
         }
-    }
-    
-    public void tickPause()
-    {
-        // Enter (Pause Menu)
-        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.pauseDone();
-        }
-        
-        // Menu Tick
-        //this.pauseMenu.tick();
     }
     
 }
