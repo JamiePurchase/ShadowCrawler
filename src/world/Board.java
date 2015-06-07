@@ -38,7 +38,7 @@ public class Board
     
     public Board()
     {
-        this.file = "FILE";
+        this.file = "MantasTomb1";
         this.title = "TITLE";
         this.paneX = 11;
         this.paneY = 16;
@@ -60,11 +60,11 @@ public class Board
         this.tempFrameMax = 6;
         
         // Temp
-        this.tempPlayer = new Entity("JAKKEN", this, 22, 16, new Tileset(Drawing.getImage("spritesheet/Jakken.png"), 64, 64, 13, 42));
+        this.tempPlayer = new Entity("JAKKEN", this, 22, 16, new Tileset("spr|Jakken", Drawing.getImage("spritesheet/Jakken.png"), 64, 64, 13, 42));
         
         // Entities (enemies)
         this.entityEnemies = new ArrayList<Entity>();
-        this.entityEnemies.add(new Entity("SKELETON1", this, 20, 15, new Tileset(Drawing.getImage("spritesheet/Skeleton.png"), 64, 64, 13, 42)));
+        this.entityEnemies.add(new Entity("SKELETON1", this, 20, 15, new Tileset("spr|Skeleton", Drawing.getImage("spritesheet/Skeleton.png"), 64, 64, 13, 42)));
         
         // Entities (visual)
         this.entityVisuals = new ArrayList<Visual>();
@@ -95,6 +95,34 @@ public class Board
                 if(!this.entityEnemies.get(e).getStatusKO()) {this.entityEnemies.get(e).inflictDamage(damage);}
             }
         }
+        
+        // Temp cracked wall
+        if(tileX == 31 || tileX == 32)
+        {
+            if(tileY == 13 || tileY == 14)
+            {
+                Tileset crypt = new Tileset("tst|crypt", Drawing.getImage("tileset/crypt.png"));
+                this.terrain[31][13].setImage(crypt.getTileAt(8, 2));
+                this.terrain[32][13].setImage(crypt.getTileAt(9, 2));
+                this.terrain[31][14].setImage(crypt.getTileAt(8, 3));
+                this.terrain[32][14].setImage(crypt.getTileAt(9, 3));
+                this.terrain[31][14].setSolid(false);
+                this.terrain[32][14].setSolid(false);
+                this.redrawTerrain();
+                // NOTE: create a gateway
+            }
+        }
+    }
+    
+    public String getFile()
+    {
+        return this.getFile(false);
+    }
+    
+    public String getFile(boolean full)
+    {
+        if(full) {return "Board/" + this.file + ".froth";}
+        return this.file;
     }
     
     private int getPaneCols()
@@ -125,6 +153,16 @@ public class Board
     public int getScrollY()
     {
         return this.scrollY;
+    }
+    
+    public int getSizeX()
+    {
+        return this.sizeX;
+    }
+    
+    public int getSizeY()
+    {
+        return this.sizeY;
     }
     
     public Tile getTerrain(int tileX, int tileY)

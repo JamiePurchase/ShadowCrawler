@@ -1,8 +1,10 @@
 package world;
 
+import file.FileWrite;
 import gfx.Drawing;
 import gfx.Tileset;
 import java.awt.Color;
+import java.io.IOException;
 
 public class BoardDao
 {
@@ -16,7 +18,7 @@ public class BoardDao
         if(editor) {board.setPane(0, 37, 1344, 608);}
         
         // Temp
-        Tileset crypt = new Tileset(Drawing.getImage("tileset/crypt.png"));
+        Tileset crypt = new Tileset("tst|crypt", Drawing.getImage("tileset/crypt.png"));
         
         // Temp
         Tile ground = new Tile(crypt, 1, 1, false);
@@ -36,6 +38,8 @@ public class BoardDao
         board.setTerrain(28, 15, ground);
         board.setTerrain(29, 15, ground);
         board.setTerrain(30, 15, ground);
+        board.setTerrain(31, 15, ground);
+        board.setTerrain(32, 15, ground);
         board.setTerrain(19, 16, ground);
         board.setTerrain(20, 16, ground);
         board.setTerrain(21, 16, ground);
@@ -48,6 +52,8 @@ public class BoardDao
         board.setTerrain(28, 16, ground);
         board.setTerrain(29, 16, ground);
         board.setTerrain(30, 16, ground);
+        board.setTerrain(31, 16, ground);
+        board.setTerrain(32, 16, ground);
         board.setTerrain(19, 17, ground);
         board.setTerrain(20, 17, ground);
         board.setTerrain(21, 17, ground);
@@ -60,6 +66,8 @@ public class BoardDao
         board.setTerrain(28, 17, ground);
         board.setTerrain(29, 17, ground);
         board.setTerrain(30, 17, ground);
+        board.setTerrain(31, 17, ground);
+        board.setTerrain(32, 17, ground);
         board.setTerrain(19, 18, ground);
         board.setTerrain(20, 18, ground);
         board.setTerrain(21, 18, ground);
@@ -72,6 +80,8 @@ public class BoardDao
         board.setTerrain(28, 18, ground);
         board.setTerrain(29, 18, ground);
         board.setTerrain(30, 18, ground);
+        board.setTerrain(31, 18, ground);
+        board.setTerrain(32, 18, ground);
         
         // Wall
         board.setTerrain(19, 11, wall2);
@@ -86,6 +96,8 @@ public class BoardDao
         board.setTerrain(28, 11, wall2);
         board.setTerrain(29, 11, wall2);
         board.setTerrain(30, 11, wall2);
+        board.setTerrain(31, 11, wall2);
+        board.setTerrain(32, 11, wall2);
         board.setTerrain(19, 12, wall2);
         board.setTerrain(20, 12, wall2);
         board.setTerrain(21, 12, wall2);
@@ -98,6 +110,8 @@ public class BoardDao
         board.setTerrain(28, 12, wall2);
         board.setTerrain(29, 12, wall2);
         board.setTerrain(30, 12, wall2);
+        board.setTerrain(31, 12, wall2);
+        board.setTerrain(32, 12, wall2);
         board.setTerrain(19, 13, wall2);
         board.setTerrain(20, 13, wall2);
         board.setTerrain(21, 13, wall2);
@@ -125,7 +139,51 @@ public class BoardDao
         board.setTerrain(23, 14, new Tile(crypt, 3, 3, true));
         board.setTerrain(24, 14, new Tile(crypt, 4, 3, true));
         
+        // Temp (crack)
+        board.setTerrain(31, 13, new Tile(crypt, 6, 2, true));
+        board.setTerrain(32, 13, new Tile(crypt, 7, 2, true));
+        board.setTerrain(31, 14, new Tile(crypt, 6, 3, true));
+        board.setTerrain(32, 14, new Tile(crypt, 7, 3, true));
+        
         return board;
+    }
+    
+    public static void saveBoard(Board board)
+    {
+        // Overwrite existing file with one line
+        FileWrite fileWrite = new FileWrite(board.getFile(true), false);
+        try
+        {
+            fileWrite.FileWriteLine(board.getFile());
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+        
+        // Append other lines
+        fileWrite = new FileWrite(board.getFile(true), true);
+        try
+        {
+            fileWrite.FileWriteLine(board.getSizeX() + "|" + board.getSizeY());
+            /*fileWrite.FileWriteLine("!! Tilesets");
+            fileWrite.FileWriteLine(this.boardTileset[0]);
+            fileWrite.FileWriteLine(this.boardTileset[1]);
+            fileWrite.FileWriteLine(this.boardTileset[2]);*/
+            fileWrite.FileWriteLine("!! Grid");
+            for(int y = 0; y < board.getSizeY(); y++)
+            {
+                for(int x = 0; x < board.getSizeX(); x++)
+                {
+                    fileWrite.FileWriteLine(board.getTerrain(x, y).getData());
+                }
+            }
+            fileWrite.FileWriteLine("!! End of file");
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
     }
     
 }

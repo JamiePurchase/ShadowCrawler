@@ -31,9 +31,12 @@ public class StateBoard extends State
         this.board = BoardDao.loadBoard("", true);
         this.board.setInput(Editor.getInputKeyboard(), Editor.getInputMouse());
         
+        // TEST
+        //BoardDao.saveBoard(this.board);
+        
         // Brush
         this.brush = "TERRAIN";
-        this.brushTileset = new Tileset(Drawing.getImage("tileset/crypt.png"));
+        this.brushTileset = new Tileset("tst|crypt", Drawing.getImage("tileset/crypt.png"));
         this.brushTileX = 1;
         this.brushTileY = 1;
         

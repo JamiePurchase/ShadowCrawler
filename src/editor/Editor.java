@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JPanel;
 import state.State;
+import world.BoardDao;
 
 public class Editor extends JPanel implements Runnable
 {

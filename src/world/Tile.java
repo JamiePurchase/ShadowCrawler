@@ -7,6 +7,7 @@ public class Tile
 {
     private boolean blank;
     private BufferedImage image;
+    private String imageCrumb;
     private boolean solid;
     
     public Tile()
@@ -27,6 +28,7 @@ public class Tile
     {
         this.blank = false;
         this.image = tileset.getTileAt(tileX, tileY);
+        this.imageCrumb = tileset.getDataCrumb(tileX, tileY);
         this.solid = solid;
     }
     
@@ -39,6 +41,11 @@ public class Tile
     public boolean getBlank()
     {
         return this.blank;
+    }
+    
+    public String getData()
+    {
+        return this.blank + "|" + this.imageCrumb + "|" + this.solid;
     }
     
     public BufferedImage getImage()

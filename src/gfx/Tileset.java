@@ -9,8 +9,9 @@ public class Tileset
     private int tileHigh;
     private int tileCols;
     private int tileRows;
+    private String dataCrumb;
     
-    public Tileset(BufferedImage sheetFile)
+    public Tileset(String crumb, BufferedImage sheetFile)
     {
         // Debug
         System.out.println("New Tileset (sheetFile " + sheetFile.getWidth() + "x" + sheetFile.getHeight() + ")");
@@ -20,15 +21,27 @@ public class Tileset
         this.tileRows = sheetFile.getHeight() / 32;
         this.tileWide = 32;
         this.tileHigh = 32;
+        this.dataCrumb = crumb;
     }
     
-    public Tileset(BufferedImage sheetFile, int imgWide, int imgHigh, int imgCols, int imgRows)
+    public Tileset(String crumb, BufferedImage sheetFile, int imgWide, int imgHigh, int imgCols, int imgRows)
     {
         this.tileSheet = sheetFile;
         this.tileCols = imgCols;
         this.tileRows = imgRows;
         this.tileWide = imgWide;
         this.tileHigh = imgHigh;
+        this.dataCrumb = crumb;
+    }
+    
+    public String getDataCrumb()
+    {
+        return this.dataCrumb;
+    }
+    
+    public String getDataCrumb(int x, int y)
+    {
+        return this.dataCrumb + "|" + x + "|" + y;
     }
     
     public int getImageHeight()

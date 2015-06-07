@@ -103,7 +103,7 @@ public class Entity
             if(this.face.equals("N")) {imgY = 1;}
             if(this.face.equals("W")) {imgY = 2;}
             if(this.face.equals("E")) {imgY = 4;}
-            return new Tileset(Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
+            return new Tileset("spr|Jakken_Sword5", Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
         }
         if(this.action.equals("GUARD"))
         {
