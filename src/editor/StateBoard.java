@@ -167,6 +167,11 @@ public class StateBoard extends State
         gfx.setColor(Color.BLACK);
         gfx.fillRect(500, 5, 26, 26);
     }
+    
+    public void terminate()
+    {
+        // something
+    }
 
     @Override
     public void tick()

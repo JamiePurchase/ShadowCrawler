@@ -133,6 +133,12 @@ public class StateBoard extends State
         this.pauseMenu.render(gfx);
     }
     
+    public void terminate()
+    {
+        // temp
+        Application.getAudio().stopMusic();
+    }
+    
     public void tick()
     {
         if(this.pause) {this.pauseMenu.tick();}

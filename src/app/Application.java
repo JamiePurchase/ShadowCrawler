@@ -1,5 +1,7 @@
 package app;
 
+import audio.AudioManager;
+import file.FileRead;
 import gfx.Theme;
 import input.InputKeyboard;
 import input.InputMouse;
@@ -9,8 +11,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 import javax.swing.JPanel;
 import player.Campaign;
+import ui.HintBar;
 
 public class Application extends JPanel implements Runnable
 {
@@ -23,7 +27,11 @@ public class Application extends JPanel implements Runnable
     private static State appState;
     private static State appStateWait;
     private static Theme appTheme;
+    private static AudioManager appAudio;
     private static Campaign appCampaign;
+    
+    // Version
+    private static String verInfo, verDate;
     
     // Input
     private static InputKeyboard inputKeyboard;
@@ -36,6 +44,10 @@ public class Application extends JPanel implements Runnable
         this.appSizeX = 1366;
         this.appSizeY = 768;
         appTheme = new Theme();
+        appAudio = new AudioManager();
+        
+        // Version
+        this.versionInit();
 
         // Input
         inputKeyboard = new InputKeyboard();
@@ -57,6 +69,11 @@ public class Application extends JPanel implements Runnable
     public static int getAppWidth()
     {
         return appSizeX;
+    }
+    
+    public static AudioManager getAudio()
+    {
+        return appAudio;
     }
     
     public static Campaign getCampaign()
@@ -168,6 +185,7 @@ public class Application extends JPanel implements Runnable
     public static void setState(State newState, boolean wait)
     {
         //if(wait) {appStateWait = appState;}
+        if(appState != null) {appState.terminate();}
         appState = newState;
         appFrame.setFocus();
     }
@@ -202,6 +220,28 @@ public class Application extends JPanel implements Runnable
         
         // State Tick
         this.getState().tick();
+    }
+    
+    public static HintBar versionHint()
+    {
+        String hint1 = "Shadow Crawler (v" + verInfo + ") built with Java in Netbeans IDE 8.0.2.";
+        String hint2 = "Last updated  " + verDate;
+        return new HintBar(hint1, hint2);
+    }
+    
+    private void versionInit()
+    {
+        FileRead fr = new FileRead("Application/info.froth");
+        try
+        {
+            String[] info = fr.FileReadData();
+            verInfo = info[0];
+            verDate = info[1];
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
     }
     
 }

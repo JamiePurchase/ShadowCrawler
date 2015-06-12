@@ -8,6 +8,7 @@ import ui.HintBar;
 
 public class StateTitle extends State
 {
+    // Cursor
     private int cursorNow, cursorMax;
     private int cursorTickNow, cursorTickMax, cursorFrame;
     
@@ -22,14 +23,12 @@ public class StateTitle extends State
         this.cursorTickMax = 6;
         this.cursorFrame = 1;
         this.uiInfo = this.getInfo();
+        Application.getAudio().playMusic("Title");
     }
     
     public HintBar getInfo()
     {
-        // NOTE: may want to locate the version and update data elsewhere, where it can be maintained
-        String hint1 = "Shadow Crawler (v0.2) built with Java in Netbeans IDE 8.0.2.";
-        String hint2 = "Last updated  06|06|2015";
-        return new HintBar(hint1, hint2);
+        return Application.versionHint();
     }
     
     public void render(Graphics gfx)
@@ -56,6 +55,11 @@ public class StateTitle extends State
         if(cursorFrame == 2) {cursorX = 1134;}
         if(cursorFrame == 4) {cursorX = 1136;}
         gfx.drawImage(Drawing.getImage("interface/menuCursor1.png"), cursorX, (this.cursorNow * 50) + 328, null);
+    }
+    
+    public void terminate()
+    {
+        Application.getAudio().stopMusic();
     }
     
     public void tick()
