@@ -179,6 +179,13 @@ public class Board
     {
         if(this.terrain[tileX][tileY].getSolid()) {return false;}
         // NOTE: iterate through all entities and check if they are on this tile
+        for(int e = 0; e < entityEnemies.size(); e++)
+        {
+            if(entityEnemies.get(e).getTileX() == tileX && entityEnemies.get(e).getTileY() == tileY)
+            {
+                return false;
+            }
+        }
         return true;
     }
     
@@ -238,9 +245,13 @@ public class Board
             {
                 for(int y = 0; y < this.getPaneRows(); y++)
                 {
-                    if(!this.terrain[x + this.scrollX][y + this.scrollY].getBlank())
+                    // If we have tiles for this section of the board
+                    if(x + this.scrollX < this.terrain.length && y + this.scrollY < this.terrain[x].length)
                     {
-                        terrainGfx.drawImage(this.terrain[x + this.scrollX][y + this.scrollY].getImage(), x * 32, y * 32, null);
+                        if(!this.terrain[x + this.scrollX][y + this.scrollY].getBlank())
+                        {
+                            terrainGfx.drawImage(this.terrain[x + this.scrollX][y + this.scrollY].getImage(), x * 32, y * 32, null);
+                        }
                     }
                 }
             }
@@ -279,6 +290,18 @@ public class Board
         this.paneY = posY;
         this.paneW = sizeX;
         this.paneH = sizeY;
+    }
+    
+    public void setScroll(int posX, int posY)
+    {
+        this.scrollX = posX;
+        this.scrollY = posY;
+    }
+    
+    public void setScrollPlayer()
+    {
+        this.scrollX = tempPlayer.getTileX();
+        this.scrollY = tempPlayer.getTileY();
     }
     
     public void setTerrain(int posX, int posY, Tile tile)

@@ -29,6 +29,7 @@ public class StateBoard extends State
     {
         this.board = BoardDao.loadBoard("FILE", false);
         this.board.setInput(Application.getInputKeyboard(), Application.getInputMouse());
+        this.board.setScrollPlayer();
         
         // Pause Menu
         this.pause = false;
