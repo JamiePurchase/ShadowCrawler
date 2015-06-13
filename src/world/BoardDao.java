@@ -149,7 +149,7 @@ public class BoardDao
         board.setTerrain(32, 14, new Tile(crypt, 7, 3, true));
         
         // Vectors
-        board.addVector(new Vector("", 608, 384, 320, 128, true));
+        board.addVector(new Vector(board, "", 608, 352, 320, 128, true));
         
         return board;
     }

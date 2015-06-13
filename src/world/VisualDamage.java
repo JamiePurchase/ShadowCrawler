@@ -10,8 +10,6 @@ public class VisualDamage extends Visual
     
     public VisualDamage(int amount, int renderX, int renderY)
     {
-        // Debug
-        System.out.println("Visual Damage Object created at " + renderX + "," + renderY);
         super.setPos(renderX, renderY);
         super.setTick(0, 12);
         super.setDone(false);

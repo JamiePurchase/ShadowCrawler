@@ -117,14 +117,15 @@ public class Entity
         return new Rectangle(this.getPosX() - this.meshOffsetX, this.getPosY() - this.meshOffsetY, this.meshSizeX, this.meshSizeY);
     }
     
-    public int getPosTileX()
+    private Rectangle getMeshTarget(String direction)
     {
-        return this.getPosX() / 32;
-    }
-    
-    public int getPosTileY()
-    {
-        return this.getPosY() / 32;
+        int posX = this.getPosX();
+        int posY = this.getPosY();
+        if(direction == "N") {posY -= 4;}
+        if(direction == "E") {posX += 4;}
+        if(direction == "S") {posY += 4;}
+        if(direction == "W") {posX -= 4;}
+        return new Rectangle(posX - this.meshOffsetX, posY - this.meshOffsetY, this.meshSizeX, this.meshSizeY);
     }
     
     private BufferedImage getRenderImage()
@@ -195,24 +196,14 @@ public class Entity
     
     private int getRenderPosX()
     {
-        if(this.action.equals("ATTACK"))
-        {
-            return (this.posX - this.board.getScrollPosX()) - 64;
-        }
-        
-        // Idle
-        return this.posX - this.board.getScrollPosX();
+        if(this.action.equals("ATTACK")) {this.board.getScreenPosX(this.posX -= 64);}
+        return this.board.getScreenPosX(this.posX);
     }
     
     private int getRenderPosY()
     {
-        if(this.action.equals("ATTACK"))
-        {
-            return (this.posY - this.board.getScrollPosY()) - 64;
-        }
-        
-        // Idle
-        return this.posY - this.board.getScrollPosY();
+        if(this.action.equals("ATTACK")) {this.board.getScreenPosX(this.posY -= 64);}
+        return this.board.getScreenPosX(this.posY);
     }
     
     public int getStatEnergyPercent()
@@ -277,15 +268,15 @@ public class Entity
         this.busy = false;
     }
     
-    private boolean moveValid(String direction)
+    private void movePush(String direction)
     {
-        int targetX = this.getPosTileX();
-        int targetY = this.getPosTileY();
-        if(direction.equals("E")) {targetX += 1;}
-        if(direction.equals("N")) {targetY -= 1;}
-        if(direction.equals("S")) {targetY += 1;}
-        if(direction.equals("W")) {targetX -= 1;}
-        return this.board.getTileValid(targetX, targetY);
+        if(this.board.getVectorIntersect(this.getMeshTarget(direction)) == null)
+        {
+            if(this.face == "N") {this.posY -= 4;}
+            if(this.face == "S") {this.posY += 4;}
+            if(this.face == "E") {this.posX += 4;}
+            if(this.face == "W") {this.posX -= 4;}
+        }
     }
     
     private void reduceHealth(int amount)
@@ -316,7 +307,7 @@ public class Entity
     private void renderMesh(Graphics gfx)
     {
         gfx.setColor(Color.CYAN);
-        gfx.drawRect(this.getMesh().x, this.getMesh().y, this.getMesh().width, this.getMesh().height);
+        gfx.drawRect(this.board.getScreenPosX(this.getMesh().x), this.board.getScreenPosY(this.getMesh().y), this.getMesh().width, this.getMesh().height);
     }
     
     public void setAction(String action)
@@ -375,29 +366,13 @@ public class Entity
             this.actionDamageFrame = 5;
             int targetX = this.posX;
             int targetY = this.posY;
-            int dmgW = 1;
-            int dmgH = 1;
-            if(this.face.equals("E"))
-            {
-                targetX += 1;
-                dmgW = 2;
-            }
-            if(this.face.equals("N"))
-            {
-                targetY -= 2;
-                dmgH = 2;
-            }
-            if(this.face.equals("S"))
-            {
-                targetY += 1;
-                dmgH = 2;
-            }
-            if(this.face.equals("W"))
-            {
-                targetX -= 2;
-                dmgW = 2;
-            }
-            this.actionDamageObject = new Damage(25, "MELEE", targetX, targetY, dmgW, dmgH);
+            int targetW = 64;
+            int targetH = 64;
+            if(this.face.equals("E")) {targetX += 64;}
+            if(this.face.equals("N")) {targetY -= 64;}
+            if(this.face.equals("S")) {targetY += 64;}
+            if(this.face.equals("W")) {targetX -= 64;}
+            this.actionDamageObject = new Damage(25, "MELEE", targetX, targetY, targetW, targetH);
             this.busy = true;
         }
         
@@ -516,10 +491,7 @@ public class Entity
             // Walking
             if(this.action.equals("WALK"))
             {
-                if(this.face == "N") {this.posY -= 4;}
-                if(this.face == "S") {this.posY += 4;}
-                if(this.face == "E") {this.posX += 4;}
-                if(this.face == "W") {this.posX -= 4;}
+                this.movePush(this.face);
             }
             
             // Frames Done

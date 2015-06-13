@@ -40,6 +40,9 @@ public class Board
     // Vectors
     private ArrayList<Vector> vectors;
     
+    // Damage
+    private ArrayList<DamageMarker> damageMarkers;
+    
     // Input (reference here because they're different objects when running the editor)
     private InputKeyboard inputKeyboard;
     private InputMouse inputMouse;
@@ -51,9 +54,9 @@ public class Board
         this.paneX = 11;
         this.paneY = 16;
         this.paneW = 1344;
-        this.paneH = 752;
+        this.paneH = 736;
         this.sizeX = 42;
-        this.sizeY = 23;
+        this.sizeY = 22;
         this.background = Color.BLACK;
         this.terrain = new Tile[this.sizeX][this.sizeY];
         this.setTerrainAll(new Tile());
@@ -68,17 +71,20 @@ public class Board
         this.tempFrameMax = 6;
         
         // Entities: Player
-        this.entityPlayer = new EntityPlayer("JAKKEN", this, 22, 16, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
+        this.entityPlayer = new EntityPlayer("JAKKEN", this, 512, 256, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
         
         // Entities: Enemies
         this.entityEnemies = new ArrayList<EntityEnemy>();
-        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 20, 15, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
+        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 0, 0, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
         
         // Entities: Visual
         this.entityVisuals = new ArrayList<Visual>();
         
         // Vectors
         this.vectors = new ArrayList<Vector>();
+        
+        // Damage
+        this.damageMarkers = new ArrayList<DamageMarker>();
     }
     
     public void addVector(Vector vector)
@@ -88,6 +94,14 @@ public class Board
     
     public void damageInflict(Damage damage)
     {
+        //this.damageMarkers.add(new DamageMarker(damage.getRect()));
+        
+        // Debug
+        DamageMarker dm = new DamageMarker(this, damage.getRect());
+        this.damageMarkers.add(dm);
+        Console.echoRed("Board -> damageInflict");
+        Console.echo("x " + damage.getPosX() + ", y " + damage.getPosY() + ", w " + damage.getSizeX() + ", h " + damage.getSizeY());
+        
         for(int x = 0; x < damage.getSizeX(); x++)
         {
             for(int y = 0; y < damage.getSizeY(); y++)
@@ -166,6 +180,26 @@ public class Board
         return this.paneY;
     }
     
+    /**
+     * @hint returns the exact position to draw to the screen
+     * @param boardX coords relative to the board
+     * @return 
+     */
+    public int getScreenPosX(int boardX)
+    {
+        return boardX - this.scrollX + this.paneX;
+    }
+    
+    /**
+     * @hint returns the exact position to draw to the screen
+     * @param boardY coords relative to the board
+     * @return 
+     */
+    public int getScreenPosY(int boardY)
+    {
+        return boardY - this.scrollY + this.paneY;
+    }
+    
     public int getScrollPosX()
     {
         return this.scrollX * 64;
@@ -229,7 +263,7 @@ public class Board
                 return vectors.get(v).getRef();
             }
         }
-        return "";
+        return null;
     }
     
     public void keyPressed(InputKeyboardKey key)
@@ -254,6 +288,7 @@ public class Board
         
         // Development
         this.renderVectors(gfx);
+        this.renderDamageMarkers(gfx);
         
         if(!this.editor)
         {
@@ -271,6 +306,14 @@ public class Board
     {
         gfx.setColor(this.background);
         gfx.fillRect(this.paneX, this.paneY, this.paneW, this.paneH);
+    }
+    
+    private void renderDamageMarkers(Graphics gfx)
+    {
+        for(int dm = 0; dm < this.damageMarkers.size(); dm++)
+        {
+            this.damageMarkers.get(dm).render(gfx);
+        }
     }
     
     private void renderDisplay(Graphics gfx)
@@ -420,6 +463,18 @@ public class Board
 
         // Visuals
         this.tickVisuals();
+        
+        // Damage Markers
+        this.tickDamageMarkers();
+    }
+    
+    public void tickDamageMarkers()
+    {
+        for(int dm = 0; dm < this.damageMarkers.size(); dm++)
+        {
+            if(this.damageMarkers.get(dm).getDone()) {this.damageMarkers.remove(dm);}
+            else {this.damageMarkers.get(dm).tick();}
+        }
     }
     
     public void tickEnemies()

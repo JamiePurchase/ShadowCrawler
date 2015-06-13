@@ -116,10 +116,18 @@ public class StateBoard extends State
         if(this.pause) {this.renderMenu(gfx);}
         else
         {
+            this.renderBorder(gfx);
             this.board.render(gfx);
             if(this.hudRender) {this.renderDisplay(gfx);}
             if(this.chatRender) {this.renderChat(gfx);}
         }
+    }
+    
+    public void renderBorder(Graphics gfx)
+    {
+        Drawing.fillScreen(gfx, 35, 70, 35);
+        /*gfx.setColor(Color.BLACK);
+        gfx.drawRect(10, 15, 1346, 738);*/
     }
     
     public void renderChat(Graphics gfx)

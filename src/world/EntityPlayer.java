@@ -11,9 +11,9 @@ public class EntityPlayer extends Entity
 {
     private InputKeyboard keyboard;
     
-    public EntityPlayer(String ref, Board board, int tileX, int tileY, Tileset tileset)
+    public EntityPlayer(String ref, Board board, int posX, int posY, Tileset tileset)
     {
-        super(ref, board, tileX * 32, tileY * 32, tileset);
+        super(ref, board, posX, posY, tileset);
         this.keyboard = Application.getInputKeyboard();
     }
     

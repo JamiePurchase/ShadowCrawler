@@ -1,6 +1,9 @@
 package world;
 
 import gfx.Tileset;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 
 public class Damage
 {
@@ -31,6 +34,11 @@ public class Damage
     public int getPosY()
     {
         return this.posY;
+    }
+    
+    public Rectangle getRect()
+    {
+        return new Rectangle(this.posX, this.posY, this.sizeX, this.sizeY);
     }
     
     public int getSizeX()
