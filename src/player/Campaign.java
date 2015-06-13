@@ -10,6 +10,10 @@ public class Campaign
     private long timeOverall;
     private long timeSession;
     
+    // Party
+    private ArrayList<PartyCharacter> partyCharacters;
+    private int partyLeader;
+    
     // Inventory
     private Inventory inventory;
     

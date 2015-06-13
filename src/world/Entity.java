@@ -3,8 +3,9 @@ package world;
 import app.Application;
 import gfx.Drawing;
 import gfx.Tileset;
+import effect.Effect;
+import effect.EffectCharge;
 import item.Item;
-import item.ItemWeapon;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -29,16 +30,12 @@ public class Entity
     private String action;
     private boolean actionHold;
     private int actionTickNow, actionTickMax, actionFrameNow, actionFrameMax;
-    private boolean actionRepeat;
+    private boolean actionRepeat, actionRemain;
     private String actionResume;
     private boolean actionDamage;
     private int actionDamageFrame;
     private Damage actionDamageObject;
-    
-    // Reward
-    private int rewardGoldMin, rewardGoldMax;
-    private ArrayList<Item> rewardItem;
-    private int rewardXP;
+    private Effect actionEffect;
     
     public Entity(String ref, Board board, int tileX, int tileY, Tileset tileset)
     {
@@ -59,13 +56,22 @@ public class Entity
         
         // Action
         this.setAction("IDLE");
+    }
+    
+    public void cast()
+    {
+        this.setAction("CAST");
+    }
+    
+    public void charge(boolean action)
+    {
+        if(action) {this.setAction("CHARGE");}
+        else {this.setAction("IDLE");}
+    }
+    
+    private void death()
+    {
         
-        // Reward (TEMP)
-        this.rewardGoldMin = 25;
-        this.rewardGoldMax = 75;
-        this.rewardItem = new ArrayList<Item>();
-        //this.rewardItem.add(new ItemWeapon());
-        this.rewardXP = 24;
     }
     
     public String getAction()
@@ -104,6 +110,27 @@ public class Entity
             if(this.face.equals("W")) {imgY = 2;}
             if(this.face.equals("E")) {imgY = 4;}
             return new Tileset("spr|Jakken_Sword5", Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
+        }
+        if(this.action.equals("CAST"))
+        {
+            // Temp
+            int tileX = this.actionFrameNow;
+            int tileY = 3;
+            if(this.face.equals("N")) {tileY = 1;}
+            if(this.face.equals("W")) {tileY = 2;}
+            if(this.face.equals("E")) {tileY = 4;}
+            return this.sprite.getTileAt(tileX, tileY);
+        }
+        if(this.action.equals("CHARGE"))
+        {
+            // Temp
+            int tileX = this.actionFrameNow;
+            if(this.actionFrameNow > 2) {tileX = 3;}
+            int tileY = 3;
+            if(this.face.equals("N")) {tileY = 1;}
+            if(this.face.equals("W")) {tileY = 2;}
+            if(this.face.equals("E")) {tileY = 4;}
+            return this.sprite.getTileAt(tileX, tileY);
         }
         if(this.action.equals("GUARD"))
         {
@@ -153,22 +180,6 @@ public class Entity
         
         // Idle
         return (this.tileY - this.board.getScrollY()) * 32;   
-    }
-    
-    public int getRewardGold()
-    {
-        return Mathematics.randomInt(this.rewardGoldMin, this.rewardGoldMax);
-    }
-    
-    public ArrayList<Item> getRewardItem()
-    {
-        // NOTE: we need to randomly pick some of the potential rewards
-        return this.rewardItem;
-    }
-    
-    public int getRewardXP()
-    {
-        return this.rewardXP;
     }
     
     public boolean getStatusKO()
@@ -247,6 +258,7 @@ public class Entity
     public void setAction(String action)
     {
         // NOTE: need to carefully consider how to save all the data associated with unique actions
+        this.actionEffect = null;
         
         // Temp
         if(action.equals("IDLE"))
@@ -259,6 +271,7 @@ public class Entity
             this.actionFrameMax = 1;
             this.actionRepeat = true;
             this.actionResume = null;
+            this.actionRemain = false;
             this.actionDamage = false;
             this.actionDamageFrame = 0;
             this.actionDamageObject = null;
@@ -278,6 +291,7 @@ public class Entity
             this.actionFrameMax = 8;
             this.actionRepeat = false;
             this.actionResume = "IDLE";
+            this.actionRemain = false;
             this.busy = true;
         }
         
@@ -292,6 +306,7 @@ public class Entity
             this.actionFrameMax = 6;
             this.actionRepeat = false;
             this.actionResume = "IDLE";
+            this.actionRemain = false;
             this.actionDamage = true;
             this.actionDamageFrame = 5;
             int targetX = this.tileX;
@@ -323,6 +338,41 @@ public class Entity
         }
         
         // Temp
+        if(action.equals("CAST"))
+        {
+            this.action = "CAST";
+            this.actionTickNow = 0;
+            this.actionTickMax = 6;
+            this.actionFrameNow = 1;
+            //this.actionFrameImg
+            // NOTE: perhaps we should have individual array lists of bufferedImages for each action
+            // NOTE: it may be wise to do attach four (one for each direction)
+            this.actionFrameMax = 7;
+            this.actionRepeat = false;
+            this.actionResume = "IDLE";;
+            this.actionRemain = false;
+            this.busy = true;
+        }
+        
+        // Temp
+        if(action.equals("CHARGE"))
+        {
+            this.action = "CHARGE";
+            this.actionTickNow = 0;
+            this.actionTickMax = 0;
+            this.actionFrameNow = 1;
+            //this.actionFrameImg
+            // NOTE: perhaps we should have individual array lists of bufferedImages for each action
+            // NOTE: it may be wise to do attach four (one for each direction)
+            this.actionFrameMax = 3;
+            this.actionRepeat = true;
+            this.actionResume = "";
+            this.actionRemain = true;
+            this.actionEffect = new EffectCharge(this);
+            this.busy = true;
+        }
+        
+        // Temp
         if(action.equals("GUARD"))
         {
             this.action = "GUARD";
@@ -333,6 +383,7 @@ public class Entity
             this.actionFrameMax = 1;
             this.actionRepeat = true;
             this.actionResume = "";
+            this.actionRemain = true;
             this.actionDamage = false;
             this.actionDamageFrame = 0;
         }
@@ -347,7 +398,8 @@ public class Entity
             this.actionFrameNow = 1;
             this.actionFrameMax = 6;
             this.actionRepeat = false;
-            this.actionResume = "DEATH";
+            this.actionResume = "DEATH";;
+            this.actionRemain = false;
             this.actionDamage = false;
             this.actionDamageFrame = 0;
         }
@@ -363,12 +415,11 @@ public class Entity
             this.actionFrameNow = 0;
             this.actionFrameMax = 0;
             this.actionRepeat = false;
-            this.actionResume = "";
+            this.actionResume = "";;
+            this.actionRemain = true;
             this.actionDamage = false;
             this.actionDamageFrame = 0;
-            
-            // Rewards (consider when to do this - create a bag of loot on the floor)
-            Application.getCampaign().rewardEnemy(this.getRewardGold(), this.getRewardItem(), this.getRewardXP());
+            this.death();
         }
     }
     
@@ -378,7 +429,13 @@ public class Entity
     }
     
     public void tick()
-    {        
+    {
+        this.tickAction();
+        this.tickEffect();
+    }
+    
+    private void tickAction()
+    {
         this.actionTickNow += 1;
         if(this.actionTickNow > this.actionTickMax)
         {
@@ -405,10 +462,21 @@ public class Entity
                 }
                 
                 // Action complete (repeat or resume?)
-                if(this.actionRepeat) {this.actionFrameNow = 1;}
+                if(this.actionRepeat)
+                {
+                    if(!this.actionRemain) {this.actionFrameNow = 1;}
+                }
                 else {this.setAction(this.actionResume);}
             }
         }
+    }
+    
+    private void tickEffect()
+    {
+        /*for(int e = 0; e < actionEffects.size(); e++)
+        {
+            actionEffects.get(e).tick();
+        }*/
     }
     
 }

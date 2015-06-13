@@ -42,7 +42,8 @@ public class Editor extends JPanel implements Runnable
     private void createWindow()
     {
         this.appFrame = new Window(this.appTitle, this.appSizeX, this.appSizeY);
-        this.appState = new StateBoard();
+        //this.appState = new StateBoard();
+        this.appState = new StateAudio();
     }
     
     public static int getAppHeight()

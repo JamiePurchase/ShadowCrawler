@@ -1,5 +1,6 @@
 package world;
 
+import app.Console;
 import gfx.Drawing;
 import gfx.Tileset;
 import input.InputKeyboard;
@@ -26,10 +27,10 @@ public class Board
     
     // Temp
     private int tempTickNow, tempTickMax, tempFrameNow, tempFrameMax;
-    public Entity tempPlayer;
     
     // Entities
-    private ArrayList<Entity> entityEnemies;
+    public EntityPlayer entityPlayer;
+    private ArrayList<EntityEnemy> entityEnemies;
     private ArrayList<Visual> entityVisuals;
     
     // Input (reference here because they're different objects when running the editor)
@@ -59,14 +60,14 @@ public class Board
         this.tempFrameNow = 1;
         this.tempFrameMax = 6;
         
-        // Temp
-        this.tempPlayer = new Entity("JAKKEN", this, 22, 16, new Tileset("spr|Jakken", Drawing.getImage("spritesheet/Jakken.png"), 64, 64, 13, 42));
+        // Entities: Player
+        this.entityPlayer = new EntityPlayer("JAKKEN", this, 22, 16, new Tileset("spr|Jakken", Drawing.getImage("spritesheet/Jakken.png"), 64, 64, 13, 42));
         
-        // Entities (enemies)
-        this.entityEnemies = new ArrayList<Entity>();
-        this.entityEnemies.add(new Entity("SKELETON1", this, 20, 15, new Tileset("spr|Skeleton", Drawing.getImage("spritesheet/Skeleton.png"), 64, 64, 13, 42)));
+        // Entities: Enemies
+        this.entityEnemies = new ArrayList<EntityEnemy>();
+        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 20, 15, new Tileset("spr|Skeleton", Drawing.getImage("spritesheet/Skeleton.png"), 64, 64, 13, 42)));
         
-        // Entities (visual)
+        // Entities: Visual
         this.entityVisuals = new ArrayList<Visual>();
     }
     
@@ -203,7 +204,7 @@ public class Board
         {
             // Temp
             //gfx.drawImage(new Tileset(Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(this.tempFrameNow, 4), 50, 50, null);
-            this.tempPlayer.render(gfx);
+            this.entityPlayer.render(gfx);
 
             if(this.entityEnemies.size() > 0) {this.renderEnemies(gfx);}
             if(this.entityVisuals.size() > 0) {this.renderVisuals(gfx);}
@@ -300,8 +301,8 @@ public class Board
     
     public void setScrollPlayer()
     {
-        this.scrollX = tempPlayer.getTileX();
-        this.scrollY = tempPlayer.getTileY();
+        this.scrollX = entityPlayer.getTileX();
+        this.scrollY = entityPlayer.getTileY();
     }
     
     public void setTerrain(int posX, int posY, Tile tile)
@@ -335,15 +336,7 @@ public class Board
         }
         
         // Entities
-        if(!this.editor)
-        {
-            // Temp
-            this.tickPlayer();
-
-            // Entities
-            this.tickEnemies();
-            this.tickVisuals();
-        }
+        if(!this.editor) {this.tickEntity();}
         else {this.tickEditor();}
         
         // NOTE: animated scenery?
@@ -354,6 +347,18 @@ public class Board
         // NOTE: may not need this
     }
     
+    private void tickEntity()
+    {
+        // Player
+        this.entityPlayer.tick();
+
+        // Enemies
+        this.tickEnemies();
+
+        // Visuals
+        this.tickVisuals();
+    }
+    
     public void tickEnemies()
     {
         for(int e = 0; e < this.entityEnemies.size(); e++)
@@ -361,32 +366,6 @@ public class Board
             if(this.entityEnemies.get(e).getStatusKO()) {this.entityEnemies.remove(e);}
             else {this.entityEnemies.get(e).tick();}
         }
-    }
-    
-    public void tickPlayer()
-    {
-        // Keys
-        if(!this.tempPlayer.getBusy())
-        {
-            if(this.inputKeyboard.getKeyObject("DOWN").isPressed()) {this.tempPlayer.move("S");}
-            else if(this.inputKeyboard.getKeyObject("LEFT").isPressed()) {this.tempPlayer.move("W");}
-            else if(this.inputKeyboard.getKeyObject("RIGHT").isPressed()) {this.tempPlayer.move("E");}
-            else if(this.inputKeyboard.getKeyObject("UP").isPressed()) {this.tempPlayer.move("N");}
-            
-            // Alt (hold to guard) - press to parry? skill?
-            //if(this.inputKeyboard.getKeyObject("ALT").isPressed()) {this.tempPlayer.guard();}
-        }
-        else
-        {
-            if(this.tempPlayer.getAction().equals("GUARD"))
-            {
-                if(this.inputKeyboard.getKeyObject("ALT").isPressed()) {this.tempPlayer.guard();}
-                else {this.tempPlayer.guardDone();}
-            }
-        }
-        
-        // Temp
-        this.tempPlayer.tick();
     }
     
     private void tickVisuals()

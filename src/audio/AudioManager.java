@@ -5,25 +5,34 @@ import java.io.IOException;
 
 public class AudioManager
 {
-    private static boolean active = true;
-    private static boolean musicActive = false;
+    private static boolean active;
+    private static boolean musicActive;
     private static String musicFile;
-    private static boolean soundActive = false;
+    private static boolean soundActive;
     private static String soundFile;
     private static int soundTick;
-    private static int volume = 100;
+    private static int volume;
+    private boolean loadDone;
 
     public AudioManager()
     {
-        AudioPlayer.init();
-        initMusic();
-        initSounds();
+        // Data is loaded during the init state
+        this.active = true;
+        this.musicActive = false;
+        this.soundActive = false;
+        this.volume = 100;
+        this.loadDone = false;
     }
 
     public void changeMusic(String music)
     {
         if(musicActive){stopMusic();}
         playMusic(music);
+    }
+    
+    public boolean getLoadDone()
+    {
+        return this.loadDone;
     }
 
     public boolean getMusicActive()
@@ -35,19 +44,20 @@ public class AudioManager
     {
         return soundActive;
     }
-
-    public void initMusic()
+    
+    public void load()
     {
-        // Reads the playlist from the data file
+        // Player
+        AudioPlayer.init();
+        
+        // Music Files
         this.loadFile("audio/music.froth");
-    }
-
-    public void initSounds()
-    {
-        // Note: Do we need these?
-        /*AudioPlayer.load("/sounds/collectGarnet.wav", "Garnet");
-        AudioPlayer.load("/sounds/collectMushroom.wav", "Mushroom");
-        AudioPlayer.load("/sounds/collectTreasure.wav", "Treasure");*/
+        
+        // Sound Files
+        //this.loadFile("audio/sound.froth");
+        
+        // Done
+        this.loadDone = true;
     }
     
     private void loadFile(String file)

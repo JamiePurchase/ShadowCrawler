@@ -6,7 +6,7 @@ import gfx.Theme;
 import input.InputKeyboard;
 import input.InputMouse;
 import state.State;
-import state.StateTitle;
+import state.StateInit;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,6 +14,8 @@ import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import javax.swing.JPanel;
 import player.Campaign;
+import state.StateTitle;
+import tileset.TilesetManager;
 import ui.HintBar;
 
 public class Application extends JPanel implements Runnable
@@ -26,7 +28,6 @@ public class Application extends JPanel implements Runnable
     private boolean appRunning;
     private static State appState;
     private static State appStateWait;
-    private static Theme appTheme;
     private static AudioManager appAudio;
     private static Campaign appCampaign;
     
@@ -36,6 +37,13 @@ public class Application extends JPanel implements Runnable
     // Input
     private static InputKeyboard inputKeyboard;
     private static InputMouse inputMouse;
+    
+    // Graphics
+    private static Theme gfxTheme;
+    private static TilesetManager gfxTiles;
+    
+    // Quickstart
+    private static boolean quickstart;
 
     public Application()
     {
@@ -43,7 +51,6 @@ public class Application extends JPanel implements Runnable
         this.appTitle = "Shadow Crawler";
         this.appSizeX = 1366;
         this.appSizeY = 768;
-        appTheme = new Theme();
         appAudio = new AudioManager();
         
         // Version
@@ -52,12 +59,17 @@ public class Application extends JPanel implements Runnable
         // Input
         inputKeyboard = new InputKeyboard();
         inputMouse = new InputMouse();
+        
+        // Graphics
+        gfxTheme = new Theme();
+        gfxTiles = new TilesetManager();
     }
     
     private void createWindow()
     {
         this.appFrame = new Window(this.appTitle, this.appSizeX, this.appSizeY);
-        this.appState = new StateTitle();
+        if(this.quickstart) {this.appState = new StateTitle();}
+        else {this.appState = new StateInit();}
         this.appStateWait = null;
     }
     
@@ -103,12 +115,32 @@ public class Application extends JPanel implements Runnable
     
     public static Color getThemeColour(String ref)
     {
-        return appTheme.getColour(ref);
+        return gfxTheme.getColour(ref);
     }
     
     public static Font getThemeFont(String ref)
     {
-        return appTheme.getFont(ref);
+        return gfxTheme.getFont(ref);
+    }
+    
+    public static void loadAudio()
+    {
+        appAudio.load();
+    }
+    
+    public static boolean loadAudioDone()
+    {
+        return appAudio.getLoadDone();
+    }
+    
+    public static void loadTiles()
+    {
+        gfxTiles.load();
+    }
+    
+    public static boolean loadTilesDone()
+    {
+        return gfxTiles.getLoadDone();
     }
     
     private void render()
@@ -190,14 +222,22 @@ public class Application extends JPanel implements Runnable
         appFrame.setFocus();
     }
         
-    public synchronized void start()
+    public synchronized void start(boolean quickstart)
     {
         if(this.appRunning == false)
         {
+            if(quickstart) {startQuickstart();}
             this.appRunning = true;
             this.appThread = new Thread(this);
             this.appThread.start();
         }
+    }
+    
+    private void startQuickstart()
+    {
+        this.quickstart = true;
+        appAudio.load();
+        gfxTiles.load();
     }
 
     public synchronized void stop()

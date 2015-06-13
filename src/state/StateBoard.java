@@ -9,7 +9,11 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import menu.Menu;
 import menu.MenuEquipment;
+import menu.MenuPause;
 import player.Campaign;
+import ui.HudCharacter;
+import ui.MessageBar;
+import ui.MessageBarChat;
 import world.Board;
 import world.BoardDao;
 
@@ -22,7 +26,12 @@ public class StateBoard extends State
     private BufferedImage pauseBkg;
     private Menu pauseMenu;
     
-    // Chat Display
+    // HUD Display
+    private boolean hudRender;
+    private HudCharacter hudCharacter;
+    
+    // Message Bar
+    private MessageBar chatMessage;
     private boolean chatRender;
     
     public StateBoard()
@@ -35,7 +44,12 @@ public class StateBoard extends State
         this.pause = false;
         this.pauseBkg = null;
         
-        // Chat Display
+        // HUD Display
+        this.hudRender = true;
+        this.hudCharacter = new HudCharacter();
+        
+        // Message Bar
+        this.chatMessage = null;
         this.chatRender = false;
         
         // Temp
@@ -51,7 +65,8 @@ public class StateBoard extends State
     public void pauseInit()
     {
         this.pause = true;
-        this.pauseMenu = new MenuEquipment(this);
+        this.pauseMenu = new MenuPause(this);
+        //this.pauseMenu = new MenuEquipment(this);
     }
     
     public void render(Graphics gfx)
@@ -60,37 +75,25 @@ public class StateBoard extends State
         else
         {
             this.board.render(gfx);
-            //this.renderDisplay(gfx); // NOTE: this needs ALOT of thought and improvment
+            if(this.hudRender) {this.renderDisplay(gfx);}
             if(this.chatRender) {this.renderChat(gfx);}
         }
     }
     
     public void renderChat(Graphics gfx)
     {
-        // NOTE: with being DRY in mind, this piece of ui should have its own class
-        
-        // Portrait
-        gfx.drawImage(Drawing.getImage("portrait/Jakken_Chat.png"), 140, 441, null);
-        
-        // Pane
-        Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/chatPane1bkg.png"), 0, 568, 0.8f);
-        gfx.drawImage(Drawing.getImage("interface/chatPane1border.png"), 0, 568, null);
-        
-        // Speaker
-        gfx.setFont(Theme.getFont("CHATSPEAKER"));
-        gfx.setColor(Theme.getColour("TEXTSHADOW"));
-        gfx.drawString("JAKKEN", 147, 626);
-        gfx.setColor(Theme.getColour("TEXT"));
-        gfx.drawString("JAKKEN", 145, 625);
-        // NOTE: the shadow effect is not currently available alongside alignment (improve these)
-        
-        // Speech
-        gfx.setFont(Theme.getFont("CHATSPEECH"));
-        gfx.setColor(Theme.getColour("TEXT"));
-        gfx.drawString("This is the chat window... here is the text.", 130, 665);
+        this.chatMessage.render(gfx);
     }
     
     public void renderDisplay(Graphics gfx)
+    {
+        // Character
+        this.hudCharacter.render(gfx);
+        
+        // Equipment
+    }
+    
+    public void renderDisplayOld(Graphics gfx)
     {
         // Skill Display
         
@@ -133,6 +136,24 @@ public class StateBoard extends State
         this.pauseMenu.render(gfx);
     }
     
+    public void setChat()
+    {
+        this.chatMessage = null;
+        this.chatRender = false;
+    }
+    
+    public void setChat(String title, String text1, String text2)
+    {
+        this.chatMessage = new MessageBar(title, text1, text2);
+        this.chatRender = true;
+    }
+    
+    public void setChat(String title, String text1, String text2, String portrait)
+    {
+        this.chatMessage = new MessageBarChat(title, text1, text2, portrait);
+        this.chatRender = true;
+    }
+    
     public void terminate()
     {
         // temp
@@ -164,13 +185,13 @@ public class StateBoard extends State
         }
         
         // Player Actions (if not busy)
-        if(!this.board.tempPlayer.getBusy())
+        if(!this.board.entityPlayer.getBusy())
         {
             // Space (attack)
             if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
             {
                 Application.getInputKeyboard().keyPressedDone();
-                this.board.tempPlayer.setAction("ATTACK");
+                this.board.entityPlayer.setAction("ATTACK");
             }
         }
     }

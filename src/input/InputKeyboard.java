@@ -1,5 +1,6 @@
 package input;
 
+import app.Console;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -33,6 +34,10 @@ public class InputKeyboard implements KeyListener
         this.keyboard.put("LEFT", new InputKeyboardKey());
         this.keyboard.put("RIGHT", new InputKeyboardKey());
         this.keyboard.put("UP", new InputKeyboardKey());
+        
+        // Ability Keys
+        this.keyboard.put("CTRL", new InputKeyboardKey());
+        this.keyboard.put("ALT", new InputKeyboardKey());
     }
     
     private String getKeyName(KeyEvent e)
@@ -47,6 +52,10 @@ public class InputKeyboard implements KeyListener
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {return "LEFT";}
         if(e.getKeyCode() == KeyEvent.VK_RIGHT) {return "RIGHT";}
         if(e.getKeyCode() == KeyEvent.VK_UP) {return "UP";}
+        
+        // Ability Keys
+        if(e.getKeyCode() == KeyEvent.VK_ALT) {return "ALT";}
+        if(e.getKeyCode() == KeyEvent.VK_CONTROL) {return "CTRL";}
         
         // Unknown Key
         return "UNKNOWN";
@@ -79,6 +88,7 @@ public class InputKeyboard implements KeyListener
 
     public void keyPressed(KeyEvent e)
     {
+        Console.echoRed("Key Pressed : " + this.getKeyName(e));
         if(!this.getKeyName(e).equals("UNKNOWN"))
         {
             this.keyboard.get(this.getKeyName(e)).press();
