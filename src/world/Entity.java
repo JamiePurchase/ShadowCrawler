@@ -1,24 +1,33 @@
 package world;
 
 import app.Application;
+import app.Console;
 import gfx.Drawing;
 import gfx.Tileset;
 import effect.Effect;
 import effect.EffectCharge;
 import item.Item;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import maths.Mathematics;
+import org.w3c.dom.css.Rect;
 
 public class Entity
 {
     private String ref;
     private Board board;
-    private int tileX, tileY;
+    private int posX, posY;
     private String face;
     private boolean busy;
     private Tileset sprite;
+    
+    // Mesh
+    private int meshSizeX, meshSizeY;
+    private int meshOffsetX, meshOffsetY;
+    private boolean meshRender;
     
     // Stats
     private int statHealthNow, statHealthMax;
@@ -37,15 +46,22 @@ public class Entity
     private Damage actionDamageObject;
     private Effect actionEffect;
     
-    public Entity(String ref, Board board, int tileX, int tileY, Tileset tileset)
+    public Entity(String ref, Board board, int posX, int posY, Tileset tileset)
     {
         this.ref = ref;
         this.board = board;
-        this.tileX = tileX;
-        this.tileY = tileY;
+        this.posX = posX;
+        this.posY = posY;
         this.face = "S";
         this.busy = false;
         this.sprite = tileset;
+        
+        // Mesh
+        this.meshSizeX = 64;
+        this.meshSizeY = 64;
+        this.meshOffsetX = 0;
+        this.meshOffsetY = 0;
+        this.meshRender = true;
         
         // Stats
         this.statHealthNow = 100;
@@ -84,6 +100,21 @@ public class Entity
         return this.busy;
     }
     
+    public Rectangle getMesh()
+    {
+        return new Rectangle(this.getPosX() - this.meshOffsetX, this.getPosY() - this.meshOffsetY, this.meshSizeX, this.meshSizeY);
+    }
+    
+    public int getPosTileX()
+    {
+        return this.getPosX() / 32;
+    }
+    
+    public int getPosTileY()
+    {
+        return this.getPosY() / 32;
+    }
+    
     private BufferedImage getRenderImage()
     {
         // NOTE: can we assume that all entities will have tilesets laid-out in the exact fashion?
@@ -109,7 +140,7 @@ public class Entity
             if(this.face.equals("N")) {imgY = 1;}
             if(this.face.equals("W")) {imgY = 2;}
             if(this.face.equals("E")) {imgY = 4;}
-            return new Tileset("spr|Jakken_Sword5", Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
+            return new Tileset("spr|chr|Jakken_Sword5", Drawing.getImage("spritesheet/character/Jakken/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
         }
         if(this.action.equals("CAST"))
         {
@@ -154,32 +185,32 @@ public class Entity
     {
         if(this.action.equals("WALK"))
         {
-            if(this.face == "E") {return (this.tileX - this.board.getScrollX()) * 32 + (this.actionFrameNow * 4);}
-            if(this.face == "W") {return (this.tileX - this.board.getScrollX()) * 32 - (this.actionFrameNow * 4);}
+            if(this.face == "E") {return (this.posX - this.board.getScrollPosX()) * 32 + (this.actionFrameNow * 4);}
+            if(this.face == "W") {return (this.posX - this.board.getScrollPosX()) * 32 - (this.actionFrameNow * 4);}
         }
         if(this.action.equals("ATTACK"))
         {
-            return ((this.tileX - this.board.getScrollX()) * 32) - 64;
+            return (this.posX - this.board.getScrollPosX()) - 64;
         }
         
         // Idle
-        return (this.tileX - this.board.getScrollX()) * 32;
+        return this.posX - this.board.getScrollPosX();
     }
     
     private int getRenderPosY()
     {
         if(this.action.equals("WALK"))
         {
-            if(this.face == "N") {return (this.tileY - this.board.getScrollY()) * 32 - (this.actionFrameNow * 4);}
-            if(this.face == "S") {return (this.tileY - this.board.getScrollY()) * 32 + (this.actionFrameNow * 4);}
+            if(this.face == "N") {return (this.posY - this.board.getScrollPosY()) * 32 - (this.actionFrameNow * 4);}
+            if(this.face == "S") {return (this.posY - this.board.getScrollPosY()) * 32 + (this.actionFrameNow * 4);}
         }
         if(this.action.equals("ATTACK"))
         {
-            return ((this.tileY - this.board.getScrollY()) * 32) - 64;
+            return (this.posY - this.board.getScrollPosY()) - 64;
         }
         
         // Idle
-        return (this.tileY - this.board.getScrollY()) * 32;   
+        return this.posY - this.board.getScrollPosY();
     }
     
     public boolean getStatusKO()
@@ -187,14 +218,14 @@ public class Entity
         return this.statusKO;
     }
     
-    public int getTileX()
+    public int getPosX()
     {
-        return this.tileX;
+        return this.posX;
     }
     
-    public int getTileY()
+    public int getPosY()
     {
-        return this.tileY;
+        return this.posY;
     }
     
     public void guard()
@@ -210,7 +241,7 @@ public class Entity
     public void inflictDamage(Damage damage)
     {
         this.reduceHealth(damage.getDamageBase());
-        this.board.damageVisual(damage.getDamageBase(), this.getTileX(), this.getTileY());
+        this.board.damageVisual(damage.getDamageBase(), this.getPosX(), this.getPosY());
         // NOTE: basic damage should be changed (potential critical, might even miss)
         // NOTE: add random int between 0 and 9 for variation
         // NOTE: consider defence and elemental weakness/resistance
@@ -218,18 +249,21 @@ public class Entity
     
     public void move(String direction)
     {
+        // Debug
+        Console.echo(this.ref + " is moving " + direction);
+        
         this.setDirection(direction);
-        if(this.moveValid(direction))
-        {
+        //if(this.moveValid(direction))
+        //{
             this.setAction("WALK");
-        }
+        //}
         //this.moveCollide();
     }
     
     private boolean moveValid(String direction)
     {
-        int targetX = this.tileX;
-        int targetY = this.tileY;
+        int targetX = this.getPosTileX();
+        int targetY = this.getPosTileY();
         if(direction.equals("E")) {targetX += 1;}
         if(direction.equals("N")) {targetY -= 1;}
         if(direction.equals("S")) {targetY += 1;}
@@ -252,7 +286,14 @@ public class Entity
     
     public void render(Graphics gfx)
     {
+        if(meshRender) {this.renderMesh(gfx);}
         gfx.drawImage(this.getRenderImage(), this.getRenderPosX(), this.getRenderPosY(), null);
+    }
+    
+    private void renderMesh(Graphics gfx)
+    {
+        gfx.setColor(Color.CYAN);
+        gfx.drawRect(this.getMesh().x, this.getMesh().y, this.getMesh().width, this.getMesh().height);
     }
     
     public void setAction(String action)
@@ -309,8 +350,8 @@ public class Entity
             this.actionRemain = false;
             this.actionDamage = true;
             this.actionDamageFrame = 5;
-            int targetX = this.tileX;
-            int targetY = this.tileY;
+            int targetX = this.posX;
+            int targetY = this.posY;
             int dmgW = 1;
             int dmgH = 1;
             if(this.face.equals("E"))
@@ -455,10 +496,10 @@ public class Entity
                 // Entity has walked to another tile
                 if(this.action.equals("WALK"))
                 {
-                    if(this.face == "N") {this.tileY -= 1;}
-                    if(this.face == "S") {this.tileY += 1;}
-                    if(this.face == "E") {this.tileX += 1;}
-                    if(this.face == "W") {this.tileX -= 1;}
+                    if(this.face == "N") {this.posY -= 8;}
+                    if(this.face == "S") {this.posY += 8;}
+                    if(this.face == "E") {this.posX += 8;}
+                    if(this.face == "W") {this.posX -= 8;}
                 }
                 
                 // Action complete (repeat or resume?)

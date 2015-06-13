@@ -10,17 +10,15 @@ import state.StateBoard;
 
 public class MenuEquipment extends Menu
 {
-    private StateBoard stateParent;
-    
     // TEMP
     private PartyCharacter character;
     
     // temp
     private int tempWeapon;
     
-    public MenuEquipment(StateBoard state)
+    public MenuEquipment(StateBoard board)
     {
-        this.stateParent = state;
+        super(board);
         
         // TEMP
         character = new PartyCharacter("Jakken");
@@ -78,7 +76,7 @@ public class MenuEquipment extends Menu
         if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
         {
             Application.getInputKeyboard().keyPressedDone();
-            this.stateParent.pauseDone();
+            this.getState().pauseDone();
         }
         if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
         {

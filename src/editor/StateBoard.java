@@ -86,7 +86,7 @@ public class StateBoard extends State
             click -= 32;
             tileX += 1;
         }
-        return tileX + this.board.getScrollX();
+        return tileX + this.board.getScrollPosX();
     }
     
     private int getTileY(int click)
@@ -98,7 +98,7 @@ public class StateBoard extends State
             click -= 32;
             tileY += 1;
         }
-        return tileY + this.board.getScrollY();
+        return tileY + this.board.getScrollPosY();
     }
 
     @Override

@@ -7,6 +7,7 @@ import input.InputKeyboard;
 import input.InputMouse;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -32,6 +33,9 @@ public class Board
     public EntityPlayer entityPlayer;
     private ArrayList<EntityEnemy> entityEnemies;
     private ArrayList<Visual> entityVisuals;
+    
+    // Vectors
+    private ArrayList<Vector> vectors;
     
     // Input (reference here because they're different objects when running the editor)
     private InputKeyboard inputKeyboard;
@@ -61,14 +65,17 @@ public class Board
         this.tempFrameMax = 6;
         
         // Entities: Player
-        this.entityPlayer = new EntityPlayer("JAKKEN", this, 22, 16, new Tileset("spr|Jakken", Drawing.getImage("spritesheet/Jakken.png"), 64, 64, 13, 42));
+        this.entityPlayer = new EntityPlayer("JAKKEN", this, 22, 16, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
         
         // Entities: Enemies
         this.entityEnemies = new ArrayList<EntityEnemy>();
-        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 20, 15, new Tileset("spr|Skeleton", Drawing.getImage("spritesheet/Skeleton.png"), 64, 64, 13, 42)));
+        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 20, 15, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
         
         // Entities: Visual
         this.entityVisuals = new ArrayList<Visual>();
+        
+        // Vectors
+        this.vectors = new ArrayList<Vector>();
     }
     
     public void damageInflict(Damage damage)
@@ -84,14 +91,14 @@ public class Board
     
     public void damageVisual(int amount, int tileX, int tileY)
     {
-        this.entityVisuals.add(new VisualDamage(amount, (tileX - this.getScrollX()) * 32, (tileY - this.getScrollY()) * 32));
+        this.entityVisuals.add(new VisualDamage(amount, (tileX - this.getScrollTileX()) * 32, (tileY - this.getScrollTileY()) * 32));
     }
     
     private void damageInflictTile(Damage damage, int tileX, int tileY)
     {
         for(int e = 0; e < this.entityEnemies.size(); e++)
         {
-            if(this.entityEnemies.get(e).getTileX() == tileX && this.entityEnemies.get(e).getTileY() == tileY)
+            if(this.entityEnemies.get(e).getPosX() == tileX && this.entityEnemies.get(e).getPosY() == tileY)
             {
                 if(!this.entityEnemies.get(e).getStatusKO()) {this.entityEnemies.get(e).inflictDamage(damage);}
             }
@@ -146,12 +153,22 @@ public class Board
         return this.paneY;
     }
     
-    public int getScrollX()
+    public int getScrollPosX()
+    {
+        return this.scrollX * 64;
+    }
+    
+    public int getScrollPosY()
+    {
+        return this.scrollY * 64;
+    }
+    
+    public int getScrollTileX()
     {
         return this.scrollX;
     }
     
-    public int getScrollY()
+    public int getScrollTileY()
     {
         return this.scrollY;
     }
@@ -182,12 +199,24 @@ public class Board
         // NOTE: iterate through all entities and check if they are on this tile
         for(int e = 0; e < entityEnemies.size(); e++)
         {
-            if(entityEnemies.get(e).getTileX() == tileX && entityEnemies.get(e).getTileY() == tileY)
+            if(entityEnemies.get(e).getPosX() == tileX && entityEnemies.get(e).getPosY() == tileY)
             {
                 return false;
             }
         }
         return true;
+    }
+    
+    public String getVectorIntersect(Rectangle rect)
+    {
+        for(int v = 0; v < vectors.size(); v++)
+        {
+            if(vectors.get(v).getVector().intersects(rect))
+            {
+                return vectors.get(v).getRef();
+            }
+        }
+        return "";
     }
     
     public void redrawTerrain()
@@ -203,7 +232,7 @@ public class Board
         if(!this.editor)
         {
             // Temp
-            //gfx.drawImage(new Tileset(Drawing.getImage("spritesheet/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(this.tempFrameNow, 4), 50, 50, null);
+            //gfx.drawImage(new Tileset(Drawing.getImage("spritesheet/character/Jakken/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(this.tempFrameNow, 4), 50, 50, null);
             this.entityPlayer.render(gfx);
 
             if(this.entityEnemies.size() > 0) {this.renderEnemies(gfx);}
@@ -247,11 +276,11 @@ public class Board
                 for(int y = 0; y < this.getPaneRows(); y++)
                 {
                     // If we have tiles for this section of the board
-                    if(x + this.scrollX < this.terrain.length && y + this.scrollY < this.terrain[x].length)
+                    if(x + this.getScrollTileX() < this.terrain.length && y + this.getScrollTileY() < this.terrain[x].length)
                     {
-                        if(!this.terrain[x + this.scrollX][y + this.scrollY].getBlank())
+                        if(!this.terrain[x + this.getScrollTileX()][y + this.getScrollTileY()].getBlank())
                         {
-                            terrainGfx.drawImage(this.terrain[x + this.scrollX][y + this.scrollY].getImage(), x * 32, y * 32, null);
+                            terrainGfx.drawImage(this.terrain[x + this.getScrollTileX()][y + this.getScrollTileY()].getImage(), x * 32, y * 32, null);
                         }
                     }
                 }
@@ -301,8 +330,8 @@ public class Board
     
     public void setScrollPlayer()
     {
-        this.scrollX = entityPlayer.getTileX();
-        this.scrollY = entityPlayer.getTileY();
+        this.scrollX = entityPlayer.getPosX() - (this.paneW / 2);
+        this.scrollY = entityPlayer.getPosY() - (this.paneH / 2);
     }
     
     public void setTerrain(int posX, int posY, Tile tile)

@@ -1,11 +1,32 @@
 package menu;
 
+import app.Application;
 import gfx.Drawing;
+import input.InputKeyboard;
 import java.awt.Graphics;
+import state.StateBoard;
 
 public abstract class Menu
 {
+    // Board
+    public StateBoard parent;
+    
+    // Tick
     public int tickNow, tickMax;
+    
+    // Input
+    public InputKeyboard keyboard;
+    
+    public Menu(StateBoard parent)
+    {
+        this.parent = parent;
+        this.keyboard = Application.getInputKeyboard();
+    }
+    
+    public StateBoard getState()
+    {
+        return this.parent;
+    }
     
     public abstract void render(Graphics gfx);
     

@@ -9,7 +9,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import menu.Menu;
 import menu.MenuEquipment;
+import menu.MenuInventory;
+import menu.MenuOptions;
 import menu.MenuPause;
+import menu.MenuQuests;
 import player.Campaign;
 import ui.HudCharacter;
 import ui.MessageBar;
@@ -38,7 +41,8 @@ public class StateBoard extends State
     {
         this.board = BoardDao.loadBoard("FILE", false);
         this.board.setInput(Application.getInputKeyboard(), Application.getInputMouse());
-        this.board.setScrollPlayer();
+        this.board.setScroll(0, 0);
+        //this.board.setScrollPlayer();
         
         // Pause Menu
         this.pause = false;
@@ -67,6 +71,15 @@ public class StateBoard extends State
         this.pause = true;
         this.pauseMenu = new MenuPause(this);
         //this.pauseMenu = new MenuEquipment(this);
+    }
+    
+    public void pauseMenu(String menu)
+    {
+        if(menu == "PAUSE") {this.pauseMenu = new MenuPause(this);}
+        if(menu == "QUEST") {this.pauseMenu = new MenuQuests(this);}
+        if(menu == "INVENTORY") {this.pauseMenu = new MenuInventory(this);}
+        if(menu == "EQUIPMENT") {this.pauseMenu = new MenuEquipment(this);}
+        if(menu == "OPTIONS") {this.pauseMenu = new MenuOptions(this);}
     }
     
     public void render(Graphics gfx)
