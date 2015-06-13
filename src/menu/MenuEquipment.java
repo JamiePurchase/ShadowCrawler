@@ -3,6 +3,7 @@ package menu;
 import app.Application;
 import gfx.Drawing;
 import gfx.Theme;
+import input.InputKeyboardKey;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import player.PartyCharacter;
@@ -26,6 +27,25 @@ public class MenuEquipment extends Menu
         // temp
         tempWeapon = 1;
         // NOTE: we should retrieve equipment data from the character object
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
+        {
+            Application.getInputKeyboard().keyPressedDone();
+            this.getState().pauseDone();
+        }
+        if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
+        {
+            Application.getInputKeyboard().keyPressedDone();
+            this.tempWeapon = 5;
+        }
+    }
+    
+    public void initOptions()
+    {
+        //
     }
     
     public void render(Graphics gfx)
@@ -71,18 +91,9 @@ public class MenuEquipment extends Menu
         gfx.drawImage(Drawing.getImage(image2), 570, 100, null);
     }
     
-    public void tick()
+    public void tickSelect()
     {
-        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.getState().pauseDone();
-        }
-        if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.tempWeapon = 5;
-        }
+        
     }
     
 }

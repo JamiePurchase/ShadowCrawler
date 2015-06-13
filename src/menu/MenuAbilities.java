@@ -11,12 +11,17 @@ public class MenuAbilities extends Menu
         super(board);
     }
     
+    public void initOptions()
+    {
+        //
+    }
+    
     public void render(Graphics gfx)
     {
         
     }
     
-    public void tick()
+    public void tickSelect()
     {
         
     }

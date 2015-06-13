@@ -1,8 +1,10 @@
 package state;
 
 import app.Application;
+import app.Console;
 import gfx.Drawing;
 import gfx.Theme;
+import input.InputKeyboardKey;
 import java.awt.Graphics;
 import ui.HintBar;
 
@@ -29,6 +31,18 @@ public class StateTitle extends State
     public HintBar getInfo()
     {
         return Application.versionHint();
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        if(key.getRef().equals("ENTER")) {Application.setState(new StateBoard());}
+        if(key.getRef().equals("UP")) {if(this.cursorNow > 1) {this.cursorNow -= 1;}}
+        if(key.getRef().equals("DOWN")) {if(this.cursorNow < this.cursorMax) {this.cursorNow += 1;}}
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
+    {
+        
     }
     
     public void render(Graphics gfx)
@@ -71,31 +85,6 @@ public class StateTitle extends State
             this.cursorTickNow = 0;
             this.cursorFrame += 1;
             if(this.cursorFrame > 4) {this.cursorFrame = 1;}
-        }
-        
-        // State Input
-        if(Application.getInputKeyboard().getKeyPressed() != "NONE")
-        {
-            if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-            {
-                Application.getInputKeyboard().keyPressedDone();
-                /*int menuSelect = this.menu.getCursor();
-                if(menuSelect == 0) {Application.setState(new StateGround());}
-                if(menuSelect == 1) {Application.setState(new StateFlight());}
-                if(menuSelect == 2) {Application.setState(new StateSettings());}
-                if(menuSelect == 3) {System.exit(0);}*/
-                Application.setState(new StateBoard());
-            }
-            if(Application.getInputKeyboard().getKeyPressed() == "UP")
-            {
-                Application.getInputKeyboard().keyPressedDone();
-                if(this.cursorNow > 1) {this.cursorNow -= 1;}
-            }
-            if(Application.getInputKeyboard().getKeyPressed() == "DOWN")
-            {
-                Application.getInputKeyboard().keyPressedDone();
-                if(this.cursorNow < this.cursorMax) {this.cursorNow += 1;}
-            }
         }
     }
     

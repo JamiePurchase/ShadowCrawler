@@ -1,7 +1,9 @@
 package editor;
 
+import app.Application;
 import gfx.Drawing;
 import gfx.Theme;
+import input.InputKeyboardKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -12,6 +14,16 @@ public class StateAudio extends State
     private ArrayList<String> music, sounds;
     
     public StateAudio()
+    {
+        
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
     {
         
     }

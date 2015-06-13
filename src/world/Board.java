@@ -1,15 +1,18 @@
 package world;
 
+import app.Application;
 import app.Console;
 import gfx.Drawing;
 import gfx.Tileset;
 import input.InputKeyboard;
+import input.InputKeyboardKey;
 import input.InputMouse;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import state.StateBoard;
 
 public class Board
 {
@@ -217,6 +220,16 @@ public class Board
             }
         }
         return "";
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        this.entityPlayer.keyPressed(key);
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
+    {
+        this.entityPlayer.keyReleased(key);
     }
     
     public void redrawTerrain()

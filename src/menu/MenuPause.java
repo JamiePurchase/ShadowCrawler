@@ -9,26 +9,14 @@ import state.StateBoard;
 
 public class MenuPause extends Menu
 {
-    private StateBoard stateParent;
-    
-    // Options
-    private int optCursor,optCursorTickNow, optCursorTickMax, optCursorFrameNow, optCursorFrameMax;
-    private String[] optString;
     
     public MenuPause(StateBoard board)
     {
         super(board);
-        stateParent = parent;
-        initOptions();
     }
     
-    private void initOptions()
+    public void initOptions()
     {
-        this.optCursor = 0;
-        this.optCursorTickNow = 0;
-        this.optCursorTickMax = 2;
-        this.optCursorFrameNow = 1;
-        this.optCursorFrameMax = 8;
         this.optString = new String[6];
         this.optString[0] = "QUESTS";
         this.optString[1] = "INVENTORY";
@@ -77,53 +65,16 @@ public class MenuPause extends Menu
         gfx.setFont(Theme.getFont("MENUSTATS"));
         gfx.drawString("1000", 800, 175);
     }
-
-    @Override
-    public void tick()
-    {
-        this.tickAnimate();
-        this.tickInput();
-    }
     
-    private void tickAnimate()
+    public void tickSelect()
     {
-        this.optCursorTickNow += 1;
-        if(this.optCursorTickNow > this.optCursorTickMax)
-        {
-            this.optCursorTickNow = 0;
-            this.optCursorFrameNow += 1;
-            if(this.optCursorFrameNow > this.optCursorFrameMax)
-            {
-                this.optCursorFrameNow = 1;
-            }
-        }
-    }
-    
-    private void tickInput()
-    {
-        if(keyboard.getKeyPressed() != "NONE")
-        {
-            if(keyboard.getKeyPressed() == "ENTER" || keyboard.getKeyPressed() == "SPACE")
-            {
-                keyboard.keyPressedDone();
-                if(optCursor == 0) {stateParent.pauseMenu("QUESTS");}
-                if(optCursor == 1) {stateParent.pauseMenu("INVENTORY");}
-                if(optCursor == 2) {stateParent.pauseMenu("EQUIPMENT");}
-                if(optCursor == 3) {stateParent.pauseMenu("ABILITIES");}
-                if(optCursor == 4) {stateParent.pauseMenu("OPTIONS");}
-                if(optCursor == 5) {stateParent.pauseDone();}
-            }
-            if(keyboard.getKeyPressed() == "UP")
-            {
-                keyboard.keyPressedDone();
-                if(this.optCursor > 0) {this.optCursor -= 1;}
-            }
-            if(keyboard.getKeyPressed() == "DOWN")
-            {
-                keyboard.keyPressedDone();
-                if(this.optCursor < (this.optString.length - 1)) {this.optCursor += 1;}
-            }
-        }
+        System.out.println("Tick Select (optCursor = " + this.optCursor + ")");
+        if(this.optCursor == 0) {this.changeMenu("QUESTS");}
+        if(this.optCursor == 1) {this.changeMenu("INVENTORY");}
+        if(this.optCursor == 2) {this.changeMenu("EQUIPMENT");}
+        if(this.optCursor == 3) {this.changeMenu("ABILITIES");}
+        if(this.optCursor == 4) {this.changeMenu("OPTIONS");}
+        if(this.optCursor == 5) {this.exit();}
     }
     
 }

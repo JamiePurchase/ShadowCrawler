@@ -1,5 +1,6 @@
 package input;
 
+import app.Application;
 import app.Console;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -25,19 +26,19 @@ public class InputKeyboard implements KeyListener
         this.keyboard = new HashMap<String, InputKeyboardKey>();
         
         // Command Keys
-        this.keyboard.put("ENTER", new InputKeyboardKey());
-        this.keyboard.put("ESCAPE", new InputKeyboardKey());
-        this.keyboard.put("SPACE", new InputKeyboardKey());
+        this.keyboard.put("ENTER", new InputKeyboardKey("ENTER"));
+        this.keyboard.put("ESCAPE", new InputKeyboardKey("ESCAPE"));
+        this.keyboard.put("SPACE", new InputKeyboardKey("SPACE"));
         
         // Directional Keys
-        this.keyboard.put("DOWN", new InputKeyboardKey());
-        this.keyboard.put("LEFT", new InputKeyboardKey());
-        this.keyboard.put("RIGHT", new InputKeyboardKey());
-        this.keyboard.put("UP", new InputKeyboardKey());
+        this.keyboard.put("DOWN", new InputKeyboardKey("DOWN"));
+        this.keyboard.put("LEFT", new InputKeyboardKey("LEFT"));
+        this.keyboard.put("RIGHT", new InputKeyboardKey("RIGHT"));
+        this.keyboard.put("UP", new InputKeyboardKey("UP"));
         
         // Ability Keys
-        this.keyboard.put("CTRL", new InputKeyboardKey());
-        this.keyboard.put("ALT", new InputKeyboardKey());
+        this.keyboard.put("CTRL", new InputKeyboardKey("CTRL"));
+        this.keyboard.put("ALT", new InputKeyboardKey("ALT"));
     }
     
     private String getKeyName(KeyEvent e)
@@ -94,6 +95,9 @@ public class InputKeyboard implements KeyListener
             this.keyboard.get(this.getKeyName(e)).press();
             this.keyPressed = this.getKeyName(e);
             this.keyPressedNow = true;
+            
+            // Temp
+            Application.getState().keyPressed(this.keyboard.get(this.getKeyName(e)));
         }
     }
 
@@ -104,6 +108,9 @@ public class InputKeyboard implements KeyListener
             this.keyboard.get(this.getKeyName(e)).release();
             this.keyReleased = this.getKeyName(e);
             this.keyReleasedEvent = true;
+            
+            // Temp
+            Application.getState().keyReleased(this.keyboard.get(this.getKeyName(e)));
         }
     }
     

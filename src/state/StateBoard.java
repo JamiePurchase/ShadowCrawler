@@ -4,6 +4,7 @@ import app.Application;
 import editor.Editor;
 import gfx.Drawing;
 import gfx.Theme;
+import input.InputKeyboardKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -58,6 +59,22 @@ public class StateBoard extends State
         
         // Temp
         Application.setCampaign(new Campaign());
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        if(this.pause) {this.pauseMenu.keyPressed(key);}
+        else
+        {
+            if(key.getRef().equals("ENTER")) {this.pauseInit();}
+            this.board.keyPressed(key);
+        }
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
+    {
+        if(this.pause) {this.pauseMenu.keyReleased(key);}
+        else {this.board.keyReleased(key);}
     }
     
     public void pauseDone()
@@ -176,37 +193,7 @@ public class StateBoard extends State
     public void tick()
     {
         if(this.pause) {this.pauseMenu.tick();}
-        else {tickBoard();}
-    }
-    
-    public void tickBoard()
-    {
-        // Keystrokes
-        if(Application.getInputKeyboard().getKeyPressed() != "NONE") {this.tickBoardKey();}
-        
-        // Board Tick
-        this.board.tick();
-    }
-    
-    public void tickBoardKey()
-    {
-        // Enter (Pause Menu)
-        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.pauseInit();
-        }
-        
-        // Player Actions (if not busy)
-        if(!this.board.entityPlayer.getBusy())
-        {
-            // Space (attack)
-            if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
-            {
-                Application.getInputKeyboard().keyPressedDone();
-                this.board.entityPlayer.setAction("ATTACK");
-            }
-        }
+        else {this.board.tick();}
     }
     
 }

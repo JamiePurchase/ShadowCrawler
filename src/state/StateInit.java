@@ -3,6 +3,7 @@ package state;
 import app.Application;
 import gfx.Drawing;
 import gfx.Theme;
+import input.InputKeyboardKey;
 import java.awt.Graphics;
 import ui.ProgressBar;
 
@@ -29,6 +30,16 @@ public class StateInit extends State
     private int getLoadPercent()
     {
         return 100 / this.loadCountMax * this.loadCountNow;
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
+    {
+        
     }
     
     private void load()

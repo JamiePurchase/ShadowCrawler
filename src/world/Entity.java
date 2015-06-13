@@ -255,9 +255,18 @@ public class Entity
         this.setDirection(direction);
         //if(this.moveValid(direction))
         //{
+
+            // temp
+            this.busy = true;
+        
             this.setAction("WALK");
         //}
         //this.moveCollide();
+    }
+    
+    public void moveHalt(String direction)
+    {
+        this.busy = false;
     }
     
     private boolean moveValid(String direction)
@@ -477,12 +486,18 @@ public class Entity
     
     private void tickAction()
     {
+        // Debug
+        Console.echoRed(this.ref + " tickAction");
+        Console.echo("actionTickNow: " + actionTickNow + ", actionTickMax: " + actionTickMax + ", actionFrameNow: " + actionFrameNow + ", actionTickMax: " + actionTickMax);
+        
         this.actionTickNow += 1;
         if(this.actionTickNow > this.actionTickMax)
         {
             // Frame Start
             this.actionTickNow = 0;
             this.actionFrameNow += 1;
+            
+            Console.echo("Next frame");
             
             // Damage Event
             if(this.actionDamage && this.actionFrameNow == this.actionDamageFrame)

@@ -21,19 +21,20 @@ public class MenuInventory extends Menu
         character = new PartyCharacter("Jakken");
     }
     
+    public void initOptions()
+    {
+        //
+    }
+    
     public void render(Graphics gfx)
     {
         // Frame
         this.renderFrame(gfx);
     }
     
-    public void tick()
+    public void tickSelect()
     {
-        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.getState().pauseDone();
-        }
+        
     }
     
 }

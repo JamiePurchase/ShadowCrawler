@@ -271,7 +271,7 @@ public class Application extends JPanel implements Runnable
     
     private void versionInit()
     {
-        FileRead fr = new FileRead("Application/info.froth");
+        FileRead fr = new FileRead("application/info.froth");
         try
         {
             String[] info = fr.FileReadData();

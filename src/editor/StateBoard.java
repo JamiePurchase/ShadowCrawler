@@ -3,6 +3,7 @@ package editor;
 import gfx.Drawing;
 import gfx.Theme;
 import gfx.Tileset;
+import input.InputKeyboardKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -99,6 +100,16 @@ public class StateBoard extends State
             tileY += 1;
         }
         return tileY + this.board.getScrollPosY();
+    }
+    
+    public void keyPressed(InputKeyboardKey key)
+    {
+        
+    }
+    
+    public void keyReleased(InputKeyboardKey key)
+    {
+        
     }
 
     @Override
