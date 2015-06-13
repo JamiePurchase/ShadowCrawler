@@ -3,12 +3,19 @@ package ui;
 import gfx.Drawing;
 import java.awt.Color;
 import java.awt.Graphics;
+import player.Campaign;
+import world.Board;
+import world.EntityPlayer;
 
 public class HudCharacter
 {
-    public HudCharacter()
+    private Board board;
+    private Campaign campaign;
+    
+    public HudCharacter(Board board, Campaign campaign)
     {
-        //
+        this.board = board;
+        this.campaign = campaign;
     }
     
     public void render(Graphics gfx)
@@ -33,19 +40,19 @@ public class HudCharacter
     private void renderBarEnergy(Graphics gfx)
     {
         gfx.setColor(Color.GREEN);
-        gfx.fillRect(245, 645, 400, 15);
+        gfx.fillRect(245, 645, this.board.getPlayer().getStatEnergyPercent() * 4, 15);
     }
     
     private void renderBarHealth(Graphics gfx)
     {
         gfx.setColor(Color.RED);
-        gfx.fillRect(245, 605, 400, 15);
+        gfx.fillRect(245, 605, this.board.getPlayer().getStatHealthPercent() * 4, 15);
     }
     
     private void renderBarMystic(Graphics gfx)
     {
         gfx.setColor(Color.BLUE);
-        gfx.fillRect(245, 625, 400, 15);
+        gfx.fillRect(245, 625, this.board.getPlayer().getStatMysticPercent() * 4, 15);
     }
     
     public void tick()

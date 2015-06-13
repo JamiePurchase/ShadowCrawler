@@ -58,7 +58,7 @@ public class StateBoard extends State
         
         // HUD Display
         this.hudRender = true;
-        this.hudCharacter = new HudCharacter();
+        this.hudCharacter = new HudCharacter(this.board, Application.getCampaign());
         this.hudMinimap = new HudMinimap(this.board, Application.getCampaign());
         
         // Message Bar

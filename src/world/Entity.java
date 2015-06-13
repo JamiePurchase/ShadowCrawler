@@ -26,6 +26,8 @@ public class Entity
     
     // Stats
     private int statHealthNow, statHealthMax;
+    private int statEnergyNow, statEnergyMax;
+    private int statMysticNow, statMysticMax;
     
     // Status
     private boolean statusKO;
@@ -61,12 +63,22 @@ public class Entity
         // Stats
         this.statHealthNow = 100;
         this.statHealthMax = 100;
+        this.statEnergyNow = 100;
+        this.statEnergyMax = 100;
+        this.statMysticNow = 100;
+        this.statMysticMax = 100;
         
         // Status
         this.statusKO = false;
         
         // Action
         this.setAction("IDLE");
+    }
+    
+    public void attack()
+    {
+        this.setAction("ATTACK");
+        this.reduceEnergy(12);
     }
     
     public void cast()
@@ -203,6 +215,21 @@ public class Entity
         return this.posY - this.board.getScrollPosY();
     }
     
+    public int getStatEnergyPercent()
+    {
+        return (int)((this.statEnergyNow * 100.0f) / this.statEnergyMax);
+    }
+    
+    public int getStatHealthPercent()
+    {
+        return (int)((this.statHealthNow * 100.0f) / this.statHealthMax);
+    }
+    
+    public int getStatMysticPercent()
+    {
+        return (int)((this.statMysticNow * 100.0f) / this.statMysticMax);
+    }
+    
     public boolean getStatusKO()
     {
         return this.statusKO;
@@ -272,6 +299,12 @@ public class Entity
             // NOTE: we need to setAction to dying, with instructions to fade away
             // NOTE: once the animation is finished, the board object should remove this entity
         }
+    }
+    
+    private void reduceEnergy(int amount)
+    {
+        this.statEnergyNow -= amount;
+        if(this.statEnergyNow < 1) {this.statEnergyNow = 0;}
     }
     
     public void render(Graphics gfx)

@@ -27,7 +27,7 @@ public class EntityPlayer extends Entity
         if(!this.getBusy())
         {
             // Attack
-            if(key.getRef().equals("SPACE")) {this.setAction("ATTACK");}
+            if(key.getRef().equals("SPACE")) {this.attack();}
             
             // Walk
             if(key.getRef().equals("DOWN")) {this.move("S");}
