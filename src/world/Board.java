@@ -87,9 +87,24 @@ public class Board
         this.damageMarkers = new ArrayList<DamageMarker>();
     }
     
-    public void addVector(Vector vector)
+    public void addVector(String ref, Rectangle area, boolean solid)
     {
-        this.vectors.add(vector);
+        this.vectors.add(new Vector(this, ref, area, solid));
+    }
+    
+    public void addVector(String ref, Rectangle area, boolean solid, BoardJoin join)
+    {
+        this.vectors.add(new VectorJoin(this, ref, area, solid, join));
+    }
+    
+    public void addVector(String ref, int posX, int posY, int sizeX, int sizeY, boolean solid)
+    {
+        this.addVector(ref, new Rectangle(posX * 32, posY * 32, sizeX * 32, sizeY * 32), solid);
+    }
+    
+    public void addVector(String ref, int posX, int posY, int sizeX, int sizeY, boolean solid, BoardJoin join)
+    {
+        this.addVector(ref, new Rectangle(posX * 32, posY * 32, sizeX * 32, sizeY * 32), solid, join);
     }
     
     public void damageInflict(Damage damage)
