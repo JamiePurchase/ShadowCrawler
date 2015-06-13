@@ -36,12 +36,17 @@ public class Entity
     private String action;
     private boolean actionHold;
     private int actionTickNow, actionTickMax, actionFrameNow, actionFrameMax;
+    private int actionOffsetX;
+    private int actionOffsetY;
     private boolean actionRepeat, actionRemain;
     private String actionResume;
     private boolean actionDamage;
     private int actionDamageFrame;
     private Damage actionDamageObject;
     private Effect actionEffect;
+    
+    // AI
+    private boolean aiActive;
     
     public Entity(String ref, Board board, int posX, int posY, Tileset tileset)
     {
@@ -73,6 +78,9 @@ public class Entity
         
         // Action
         this.setAction("IDLE");
+        
+        // AI
+        this.aiActive = true;
     }
     
     public void attack()
@@ -196,14 +204,12 @@ public class Entity
     
     private int getRenderPosX()
     {
-        if(this.action.equals("ATTACK")) {this.board.getScreenPosX(this.posX -= 64);}
-        return this.board.getScreenPosX(this.posX);
+        return this.board.getScreenPosX(this.posX) - this.actionOffsetX;
     }
     
     private int getRenderPosY()
     {
-        if(this.action.equals("ATTACK")) {this.board.getScreenPosX(this.posY -= 64);}
-        return this.board.getScreenPosX(this.posY);
+        return this.board.getScreenPosY(this.posY) - this.actionOffsetY;
     }
     
     public int getStatEnergyPercent()
@@ -329,6 +335,8 @@ public class Entity
             this.actionTickMax = 6;
             this.actionFrameNow = 1;
             this.actionFrameMax = 1;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = true;
             this.actionResume = null;
             this.actionRemain = false;
@@ -349,6 +357,8 @@ public class Entity
             // NOTE: perhaps we should have individual array lists of bufferedImages for each action
             // NOTE: it may be wise to do attach four (one for each direction)
             this.actionFrameMax = 8;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = true;
             this.actionResume = null;
             this.actionRemain = false;
@@ -364,13 +374,15 @@ public class Entity
             this.actionTickMax = 2;
             this.actionFrameNow = 1;
             this.actionFrameMax = 6;
+            this.actionOffsetX = 64;
+            this.actionOffsetY = 64;
             this.actionRepeat = false;
             this.actionResume = "IDLE";
             this.actionRemain = false;
             this.actionDamage = true;
             this.actionDamageFrame = 5;
-            int targetX = this.posX;
-            int targetY = this.posY;
+            int targetX = this.getPosX();
+            int targetY = this.getPosY();
             int targetW = 64;
             int targetH = 64;
             if(this.face.equals("E")) {targetX += 64;}
@@ -392,6 +404,8 @@ public class Entity
             // NOTE: perhaps we should have individual array lists of bufferedImages for each action
             // NOTE: it may be wise to do attach four (one for each direction)
             this.actionFrameMax = 7;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = false;
             this.actionResume = "IDLE";;
             this.actionRemain = false;
@@ -409,6 +423,8 @@ public class Entity
             // NOTE: perhaps we should have individual array lists of bufferedImages for each action
             // NOTE: it may be wise to do attach four (one for each direction)
             this.actionFrameMax = 3;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = true;
             this.actionResume = "";
             this.actionRemain = true;
@@ -425,6 +441,8 @@ public class Entity
             this.actionTickMax = 6;
             this.actionFrameNow = 1;
             this.actionFrameMax = 1;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = true;
             this.actionResume = "";
             this.actionRemain = true;
@@ -441,6 +459,8 @@ public class Entity
             this.actionTickMax = 12;
             this.actionFrameNow = 1;
             this.actionFrameMax = 6;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = false;
             this.actionResume = "DEATH";;
             this.actionRemain = false;
@@ -458,12 +478,27 @@ public class Entity
             this.actionTickMax = 0;
             this.actionFrameNow = 0;
             this.actionFrameMax = 0;
+            this.actionOffsetX = 0;
+            this.actionOffsetY = 0;
             this.actionRepeat = false;
             this.actionResume = "";;
             this.actionRemain = true;
             this.actionDamage = false;
             this.actionDamageFrame = 0;
             this.death();
+        }
+    }
+    
+    public void setAI(boolean value)
+    {
+        this.aiActive = value;
+        if(value == true)
+        {
+            // NOTE: we may need to give the entity a push to build a strategy
+        }
+        else
+        {
+            // NOTE: we may need to abandon some ongoing actions
         }
     }
     

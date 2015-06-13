@@ -15,6 +15,7 @@ import menu.MenuOptions;
 import menu.MenuPause;
 import menu.MenuQuests;
 import player.Campaign;
+import ui.FormationMenu;
 import ui.HudActionHint;
 import ui.HudCharacter;
 import ui.HudMinimap;
@@ -44,6 +45,10 @@ public class StateBoard extends State
     private MessageBar chatMessage;
     private boolean chatRender;
     
+    // Formation Menu
+    private FormationMenu formationMenu;
+    private boolean formationMenuActive;
+    
     public StateBoard()
     {
         this.board = BoardDao.loadBoard("FILE", false);
@@ -68,8 +73,22 @@ public class StateBoard extends State
         this.chatMessage = null;
         this.chatRender = false;
         
+        // Formation Menu
+        this.formationMenu = new FormationMenu(this.board, Application.getCampaign());
+        this.formationMenuActive = false;
+        
         // Temp
         Application.setCampaign(new Campaign());
+    }
+    
+    public void formationEdit()
+    {
+        this.formationMenuActive = true;
+    }
+    
+    public void formationDone()
+    {
+        this.formationMenuActive = false;
     }
     
     public HudActionHint getHudActionHint()
@@ -79,23 +98,35 @@ public class StateBoard extends State
     
     public void keyPressed(InputKeyboardKey key)
     {
-        if(this.pause) {this.pauseMenu.keyPressed(key);}
-        else
+        // ESCAPE: open the world map (temp)
+        if(key.getRef().equals("ESCAPE")) {Application.setState(new StateMap(), true);}
+
+        // ENTER: open the pause menu
+        if(key.getRef().equals("ENTER") && !this.pauseDisabled)
         {
-            if(key.getRef().equals("ESCAPE")) {Application.setState(new StateMap(), true);}
-            if(key.getRef().equals("ENTER") && !this.pauseDisabled)
-            {
-                Application.setState(new StatePause(this.board.getTerrainImage()));
-                //this.pauseInit();
-            }
-            this.board.keyPressed(key);
+            Application.setState(new StatePause(this.board.getTerrainImage()));
+            //this.pauseInit();
         }
+
+        // PAGEUP/PAGEDOWN: switch control between different allies
+        if(this.board.getEntityAllyCount() > 1)
+        {
+            if(key.getRef().equals("PAGEUP")) {this.board.changePlayer(true);}
+            if(key.getRef().equals("PAGEDOWN")) {this.board.changePlayer(false);}
+            if(key.getRef().equals("HOME")) {this.formationEdit();}
+        }
+
+        // Board Key Function
+        this.board.keyPressed(key);
+        
+        // Formation Menu
+        if(this.formationMenuActive) {this.formationMenu.keyPressed(key);}
     }
     
     public void keyReleased(InputKeyboardKey key)
     {
-        if(this.pause) {this.pauseMenu.keyReleased(key);}
-        else {this.board.keyReleased(key);}
+        this.board.keyReleased(key);
+        if(this.formationMenuActive) {this.formationMenu.keyReleased(key);}
     }
     
     public void render(Graphics gfx)
@@ -107,6 +138,7 @@ public class StateBoard extends State
             this.board.render(gfx);
             if(this.hudRender) {this.renderDisplay(gfx);}
             if(this.chatRender) {this.renderChat(gfx);}
+            if(this.formationMenuActive) {this.formationMenu.render(gfx);}
         }
     }
     

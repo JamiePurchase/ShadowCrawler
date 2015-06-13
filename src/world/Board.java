@@ -33,7 +33,8 @@ public class Board
     private int tempTickNow, tempTickMax, tempFrameNow, tempFrameMax;
     
     // Entities
-    public EntityPlayer entityPlayer;
+    private int entityPlayer;
+    private ArrayList<EntityPlayer> entityAllies;
     private ArrayList<EntityEnemy> entityEnemies;
     private ArrayList<EntityContainer> entityContainers;
     private ArrayList<Visual> entityVisuals;
@@ -71,9 +72,19 @@ public class Board
         this.tempFrameNow = 1;
         this.tempFrameMax = 6;
         
+        // Entities: Allies
+        this.entityAllies = new ArrayList<EntityPlayer>();
+        EntityPlayer allyJakken = new EntityPlayer("JAKKEN", this, 512, 512, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
+        allyJakken.setMesh(32, 32, -16, -32);
+        this.entityAllies.add(allyJakken);
+        
+        // Temp
+        EntityPlayer allySofeli = new EntityPlayer("SOFELI", this, 640, 512, new Tileset("spr|chr|Sofeli", Drawing.getImage("spritesheet/character/Sofeli/Sofeli.png"), 64, 64, 13, 42));
+        allySofeli.setMesh(32, 32, -16, -32);
+        this.entityAllies.add(allySofeli);
+        
         // Entities: Player
-        this.entityPlayer = new EntityPlayer("JAKKEN", this, 512, 512, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
-        this.entityPlayer.setMesh(32, 32, -16, -32);
+        this.entityPlayer = 0;
         
         // Entities: Enemies
         this.entityEnemies = new ArrayList<EntityEnemy>();
@@ -120,6 +131,22 @@ public class Board
     public void addVector(String ref, int posX, int posY, int sizeX, int sizeY, boolean solid, BoardJoin join)
     {
         this.addVector(ref, new Rectangle(posX * 32, posY * 32, sizeX * 32, sizeY * 32), solid, join);
+    }
+    
+    public void changePlayer(boolean plus)
+    {
+        int player = this.entityPlayer;
+        if(plus)
+        {
+            player += 1;
+            if(player == this.entityAllies.size()) {player = 0;}
+        }
+        else
+        {
+            player -= 1;
+            if(player < 0) {player = this.entityAllies.size();}
+        }
+        this.setPlayer(player);
     }
     
     public void damageInflict(Damage damage)
@@ -174,9 +201,14 @@ public class Board
         }
     }
     
-    public EntityPlayer getPlayer()
+    public int getEntityAllyCount()
     {
-        return this.entityPlayer;
+        return this.entityAllies.size();
+    }
+    
+    public int getEntityEnemyCount()
+    {
+        return this.entityEnemies.size();
     }
     
     public String getFile()
@@ -188,6 +220,62 @@ public class Board
     {
         if(full) {return "Board/" + this.file + ".froth";}
         return this.file;
+    }
+    
+    public String getIntersect(Rectangle rect)
+    {
+        // Enemies
+        String result = getIntersectEnemies(rect);
+        if(result != null) {return "ENE|" + result;}
+        
+        // Containers
+        result = getIntersectContainers(rect);
+        if(result != null) {return "CON|" + result;}
+        
+        // Vectors
+        result = getIntersectVectors(rect, true);
+        if(result != null) {return "VCT|" + result;}
+        
+        // No Intersection
+        return null;
+    }
+    
+    public String getIntersectContainers(Rectangle rect)
+    {
+        for(int c = 0; c < entityContainers.size(); c++)
+        {
+            if(entityContainers.get(c).getMesh().intersects(rect))
+            {
+                return entityContainers.get(c).getRef();
+            }
+        }
+        return null;
+    }
+    
+    public String getIntersectEnemies(Rectangle rect)
+    {
+        for(int e = 0; e < entityEnemies.size(); e++)
+        {
+            if(entityEnemies.get(e).getMesh().intersects(rect))
+            {
+                return entityEnemies.get(e).getRef();
+            }
+        }
+        return null;
+    }
+    
+    public String getIntersectVectors(Rectangle rect, boolean physical)
+    {
+        for(int v = 0; v < vectors.size(); v++)
+        {
+            if(vectors.get(v).getVector().intersects(rect))
+            {
+                // Looking for a collision? (ignore other vectors while physical = true)
+                if(physical) {if(vectors.get(v).getSolid()) {return vectors.get(v).getRef();}}
+                else {return vectors.get(v).getRef();}
+            }
+        }
+        return null;
     }
     
     private int getPaneCols()
@@ -208,6 +296,11 @@ public class Board
     public int getPaneY()
     {
         return this.paneY;
+    }
+    
+    public EntityPlayer getPlayer()
+    {
+        return this.entityAllies.get(this.entityPlayer);
     }
     
     /**
@@ -284,70 +377,14 @@ public class Board
         return true;
     }
     
-    public String getIntersect(Rectangle rect)
-    {
-        // Enemies
-        String result = getIntersectEnemies(rect);
-        if(result != null) {return "ENE|" + result;}
-        
-        // Containers
-        result = getIntersectContainers(rect);
-        if(result != null) {return "CON|" + result;}
-        
-        // Vectors
-        result = getIntersectVectors(rect, true);
-        if(result != null) {return "VCT|" + result;}
-        
-        // No Intersection
-        return null;
-    }
-    
-    public String getIntersectContainers(Rectangle rect)
-    {
-        for(int c = 0; c < entityContainers.size(); c++)
-        {
-            if(entityContainers.get(c).getMesh().intersects(rect))
-            {
-                return entityContainers.get(c).getRef();
-            }
-        }
-        return null;
-    }
-    
-    public String getIntersectEnemies(Rectangle rect)
-    {
-        for(int e = 0; e < entityEnemies.size(); e++)
-        {
-            if(entityEnemies.get(e).getMesh().intersects(rect))
-            {
-                return entityEnemies.get(e).getRef();
-            }
-        }
-        return null;
-    }
-    
-    public String getIntersectVectors(Rectangle rect, boolean physical)
-    {
-        for(int v = 0; v < vectors.size(); v++)
-        {
-            if(vectors.get(v).getVector().intersects(rect))
-            {
-                // Looking for a collision? (ignore other vectors while physical = true)
-                if(physical) {if(vectors.get(v).getSolid()) {return vectors.get(v).getRef();}}
-                else {return vectors.get(v).getRef();}
-            }
-        }
-        return null;
-    }
-    
     public void keyPressed(InputKeyboardKey key)
     {
-        this.entityPlayer.keyPressed(key);
+        this.getPlayer().keyPressed(key);
     }
     
     public void keyReleased(InputKeyboardKey key)
     {
-        this.entityPlayer.keyReleased(key);
+        this.getPlayer().keyReleased(key);
     }
     
     public void redrawTerrain()
@@ -366,15 +403,20 @@ public class Board
         
         if(!this.editor)
         {
-            // Temp
-            //gfx.drawImage(new Tileset(Drawing.getImage("spritesheet/character/Jakken/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(this.tempFrameNow, 4), 50, 50, null);
-            this.entityPlayer.render(gfx);
-
+            this.renderAllies(gfx);
             if(this.entityEnemies.size() > 0) {this.renderEnemies(gfx);}
             if(this.entityContainers.size() > 0) {this.renderContainers(gfx);}
             if(this.entityVisuals.size() > 0) {this.renderVisuals(gfx);}
         }
         else {this.renderEditor(gfx);}
+    }
+    
+    private void renderAllies(Graphics gfx)
+    {
+        for(int a = 0; a < this.entityAllies.size(); a++)
+        {
+            this.entityAllies.get(a).render(gfx);
+        }
     }
     
     private void renderBackground(Graphics gfx)
@@ -482,16 +524,26 @@ public class Board
         this.paneH = sizeY;
     }
     
+    public void setPlayer(int id)
+    {
+        this.entityAllies.get(this.entityPlayer).setAI(true);
+        this.entityAllies.get(id).setAI(false);
+        this.entityPlayer = id;
+        this.setScrollPlayer();
+    }
+    
     public void setScroll(int posX, int posY)
     {
         this.scrollX = posX;
         this.scrollY = posY;
+        this.terrainImageReady = false;
     }
     
     public void setScrollPlayer()
     {
-        this.scrollX = entityPlayer.getPosX() - (this.paneW / 2);
-        this.scrollY = entityPlayer.getPosY() - (this.paneH / 2);
+        this.scrollX = this.getPlayer().getPosX() - (this.paneW / 2);
+        this.scrollY = this.getPlayer().getPosY() - (this.paneH / 2);
+        this.terrainImageReady = false;
     }
     
     public void setTerrain(int posX, int posY, Tile tile)
@@ -531,6 +583,15 @@ public class Board
         // NOTE: animated scenery?
     }
     
+    private void tickAllies()
+    {
+        for(int a = 0; a < this.entityAllies.size(); a++)
+        {
+            if(this.entityAllies.get(a).getStatusKO()) {this.entityAllies.remove(a);}
+            else {this.entityAllies.get(a).tick();}
+        }
+    }
+    
     private void tickEditor()
     {
         // NOTE: may not need this
@@ -538,8 +599,8 @@ public class Board
     
     private void tickEntity()
     {
-        // Player
-        this.entityPlayer.tick();
+        // Allies
+        this.tickAllies();
 
         // Enemies
         this.tickEnemies();

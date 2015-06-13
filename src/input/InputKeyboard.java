@@ -34,6 +34,12 @@ public class InputKeyboard implements KeyListener
         // Ability Keys
         this.keyboard.put("CTRL", new InputKeyboardKey("CTRL", "ABILITY"));
         this.keyboard.put("ALT", new InputKeyboardKey("ALT", "ABILITY"));
+        
+        // Peripheral Keys
+        this.keyboard.put("PAGEUP", new InputKeyboardKey("PAGEUP", "PERIPHERAL"));
+        this.keyboard.put("PAGEDOWN", new InputKeyboardKey("PAGEDOWN", "PERIPHERAL"));
+        this.keyboard.put("HOME", new InputKeyboardKey("HOME", "PERIPHERAL"));
+        this.keyboard.put("END", new InputKeyboardKey("END", "PERIPHERAL"));
     }
     
     private String getKeyName(KeyEvent e)
@@ -52,6 +58,12 @@ public class InputKeyboard implements KeyListener
         // Ability Keys
         if(e.getKeyCode() == KeyEvent.VK_ALT) {return "ALT";}
         if(e.getKeyCode() == KeyEvent.VK_CONTROL) {return "CTRL";}
+        
+        // Peripheral Keys
+        if(e.getKeyCode() == KeyEvent.VK_PAGE_UP) {return "PAGEUP";}
+        if(e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {return "PAGEDOWN";}
+        if(e.getKeyCode() == KeyEvent.VK_HOME) {return "HOME";}
+        if(e.getKeyCode() == KeyEvent.VK_END) {return "END";}
         
         // Unknown Key
         return "UNKNOWN";
