@@ -15,11 +15,6 @@ public class InputKeyboard implements KeyListener
     // New
     public static Map<String, InputKeyboardKey> keyboard;
     
-    private static String keyPressed = "NONE";
-    private static boolean keyPressedNow = false;
-    private static String keyReleased = "NONE";
-    private static boolean keyReleasedEvent = false;
-    
     public InputKeyboard()
     {
         // Hashmap of Keys
@@ -67,21 +62,6 @@ public class InputKeyboard implements KeyListener
         return this.keyboard.get(name);
     }
 
-    public static String getKeyPressed()
-    {
-        return keyPressed;
-    }
-    
-    public static boolean getKeyPressedNow()
-    {
-        return keyPressedNow;
-    }
-
-    public static String getKeyReleased()
-    {
-        return keyReleased;
-    }
-
     public void keyTyped(KeyEvent e)
     {
         //
@@ -92,37 +72,17 @@ public class InputKeyboard implements KeyListener
         Console.echoRed("Key Pressed : " + this.getKeyName(e));
         if(!this.getKeyName(e).equals("UNKNOWN"))
         {
-            this.keyboard.get(this.getKeyName(e)).press();
-            this.keyPressed = this.getKeyName(e);
-            this.keyPressedNow = true;
-            
-            // Temp
-            Application.getState().keyPressed(this.keyboard.get(this.getKeyName(e)));
+            Application.keyPressed(this.keyboard.get(this.getKeyName(e)));
         }
     }
 
     public void keyReleased(KeyEvent e)
     {
+        Console.echoRed("Key Released : " + this.getKeyName(e));
         if(!this.getKeyName(e).equals("UNKNOWN"))
         {
-            this.keyboard.get(this.getKeyName(e)).release();
-            this.keyReleased = this.getKeyName(e);
-            this.keyReleasedEvent = true;
-            
-            // Temp
-            Application.getState().keyReleased(this.keyboard.get(this.getKeyName(e)));
+            Application.keyReleased(this.keyboard.get(this.getKeyName(e)));
         }
     }
     
-    public static void keyPressedDone()
-    {
-        keyPressed = "NONE";
-        keyPressedNow = false;
-    }
-
-    public static void keyReleasedDone()
-    {
-        keyReleased = "NONE";
-        keyReleasedEvent = false;
-    }
 }

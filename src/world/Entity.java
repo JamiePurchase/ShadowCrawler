@@ -1,19 +1,14 @@
 package world;
 
-import app.Application;
 import app.Console;
 import gfx.Drawing;
 import gfx.Tileset;
 import effect.Effect;
 import effect.EffectCharge;
-import item.Item;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import maths.Mathematics;
-import org.w3c.dom.css.Rect;
 
 public class Entity
 {
@@ -183,11 +178,6 @@ public class Entity
     
     private int getRenderPosX()
     {
-        if(this.action.equals("WALK"))
-        {
-            if(this.face == "E") {return (this.posX - this.board.getScrollPosX()) * 32 + (this.actionFrameNow * 4);}
-            if(this.face == "W") {return (this.posX - this.board.getScrollPosX()) * 32 - (this.actionFrameNow * 4);}
-        }
         if(this.action.equals("ATTACK"))
         {
             return (this.posX - this.board.getScrollPosX()) - 64;
@@ -199,11 +189,6 @@ public class Entity
     
     private int getRenderPosY()
     {
-        if(this.action.equals("WALK"))
-        {
-            if(this.face == "N") {return (this.posY - this.board.getScrollPosY()) * 32 - (this.actionFrameNow * 4);}
-            if(this.face == "S") {return (this.posY - this.board.getScrollPosY()) * 32 + (this.actionFrameNow * 4);}
-        }
         if(this.action.equals("ATTACK"))
         {
             return (this.posY - this.board.getScrollPosY()) - 64;
@@ -262,10 +247,12 @@ public class Entity
             this.setAction("WALK");
         //}
         //this.moveCollide();
+        Console.echo(this.ref + " action = " + this.action);
     }
     
     public void moveHalt(String direction)
     {
+        this.setAction("IDLE");
         this.busy = false;
     }
     
@@ -333,14 +320,14 @@ public class Entity
         {
             this.action = "WALK";
             this.actionTickNow = 0;
-            this.actionTickMax = 2;
+            this.actionTickMax = 6;
             this.actionFrameNow = 1;
             //this.actionFrameImg
             // NOTE: perhaps we should have individual array lists of bufferedImages for each action
             // NOTE: it may be wise to do attach four (one for each direction)
             this.actionFrameMax = 8;
-            this.actionRepeat = false;
-            this.actionResume = "IDLE";
+            this.actionRepeat = true;
+            this.actionResume = null;
             this.actionRemain = false;
             this.busy = true;
         }
@@ -486,10 +473,6 @@ public class Entity
     
     private void tickAction()
     {
-        // Debug
-        Console.echoRed(this.ref + " tickAction");
-        Console.echo("actionTickNow: " + actionTickNow + ", actionTickMax: " + actionTickMax + ", actionFrameNow: " + actionFrameNow + ", actionTickMax: " + actionTickMax);
-        
         this.actionTickNow += 1;
         if(this.actionTickNow > this.actionTickMax)
         {
@@ -497,26 +480,24 @@ public class Entity
             this.actionTickNow = 0;
             this.actionFrameNow += 1;
             
-            Console.echo("Next frame");
-            
             // Damage Event
             if(this.actionDamage && this.actionFrameNow == this.actionDamageFrame)
             {
                 this.board.damageInflict(this.actionDamageObject);
             }
             
+            // Walking
+            if(this.action.equals("WALK"))
+            {
+                if(this.face == "N") {this.posY -= 4;}
+                if(this.face == "S") {this.posY += 4;}
+                if(this.face == "E") {this.posX += 4;}
+                if(this.face == "W") {this.posX -= 4;}
+            }
+            
             // Frames Done
             if(this.actionFrameNow > this.actionFrameMax)
             {
-                // Entity has walked to another tile
-                if(this.action.equals("WALK"))
-                {
-                    if(this.face == "N") {this.posY -= 8;}
-                    if(this.face == "S") {this.posY += 8;}
-                    if(this.face == "E") {this.posX += 8;}
-                    if(this.face == "W") {this.posX -= 8;}
-                }
-                
                 // Action complete (repeat or resume?)
                 if(this.actionRepeat)
                 {

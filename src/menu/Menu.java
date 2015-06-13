@@ -19,11 +19,11 @@ public abstract class Menu
     
     // Input
     public InputKeyboard keyboard;
+    private boolean keyboardListen;
     
     public Menu(StateBoard parent)
     {
         this.parent = parent;
-        this.keyboard = Application.getInputKeyboard();
         
         // Options
         this.optCursor = 0;
@@ -32,6 +32,10 @@ public abstract class Menu
         this.optCursorFrameNow = 1;
         this.optCursorFrameMax = 8;
         this.initOptions();
+        
+        // Input
+        this.keyboard = Application.getInputKeyboard();
+        this.keyboardListen = true;
     }
     
     public void changeMenu(String menu)
@@ -51,14 +55,20 @@ public abstract class Menu
     
     public void keyPressed(InputKeyboardKey key)
     {
-        if(key.getRef().equals("ENTER") || key.getRef().equals("SPACE")) {this.tickSelect();}
-        if(key.getRef().equals("UP")) {if(this.optCursor > 1) {this.optCursor -= 1;}}
-        if(key.getRef().equals("DOWN")) {if(this.optCursor < this.optString.length) {this.optCursor += 1;}}
+        if(this.keyboardListen)
+        {
+            if(key.getRef().equals("ENTER") || key.getRef().equals("SPACE")) {this.tickSelect();}
+            if(key.getRef().equals("UP")) {if(this.optCursor > 1) {this.optCursor -= 1;}}
+            if(key.getRef().equals("DOWN")) {if(this.optCursor < this.optString.length) {this.optCursor += 1;}}
+        }
     }
     
     public void keyReleased(InputKeyboardKey key)
     {
-        
+        if(this.keyboardListen)
+        {
+            //
+        }
     }
     
     public abstract void initOptions();

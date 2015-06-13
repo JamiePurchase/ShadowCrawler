@@ -35,7 +35,11 @@ public class StateTitle extends State
     
     public void keyPressed(InputKeyboardKey key)
     {
-        if(key.getRef().equals("ENTER")) {Application.setState(new StateBoard());}
+        if(key.getRef().equals("ENTER"))
+        {
+            Application.setState(new StateBoard());
+            //key.release();
+        }
         if(key.getRef().equals("UP")) {if(this.cursorNow > 1) {this.cursorNow -= 1;}}
         if(key.getRef().equals("DOWN")) {if(this.cursorNow < this.cursorMax) {this.cursorNow += 1;}}
     }

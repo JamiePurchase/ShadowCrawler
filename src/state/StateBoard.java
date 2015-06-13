@@ -29,6 +29,8 @@ public class StateBoard extends State
     private boolean pause;
     private BufferedImage pauseBkg;
     private Menu pauseMenu;
+    private boolean pauseDisabled;
+    private int pauseDisabledTickNow, pauseDisabledTickMax;
     
     // HUD Display
     private boolean hudRender;
@@ -48,6 +50,9 @@ public class StateBoard extends State
         // Pause Menu
         this.pause = false;
         this.pauseBkg = null;
+        this.pauseDisabled = true;
+        this.pauseDisabledTickNow = 0;
+        this.pauseDisabledTickMax = 12;
         
         // HUD Display
         this.hudRender = true;
@@ -66,7 +71,11 @@ public class StateBoard extends State
         if(this.pause) {this.pauseMenu.keyPressed(key);}
         else
         {
-            if(key.getRef().equals("ENTER")) {this.pauseInit();}
+            if(key.getRef().equals("ENTER") && !this.pauseDisabled)
+            {
+                this.pauseInit();
+                //key.release();
+            }
             this.board.keyPressed(key);
         }
     }
@@ -192,6 +201,14 @@ public class StateBoard extends State
     
     public void tick()
     {
+        if(this.pauseDisabled)
+        {
+            this.pauseDisabledTickNow += 1;
+            if(this.pauseDisabledTickMax  >= this.pauseDisabledTickMax)
+            {
+                this.pauseDisabled = false;
+            }
+        }
         if(this.pause) {this.pauseMenu.tick();}
         else {this.board.tick();}
     }

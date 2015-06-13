@@ -43,14 +43,7 @@ public class EntityPlayer extends Entity
         }
         else
         {
-            // Walk
-            if(key.getRef().equals("DOWN")) {this.moveHalt("S");}
-            if(key.getRef().equals("LEFT")) {this.moveHalt("W");}
-            if(key.getRef().equals("RIGHT")) {this.moveHalt("E");}
-            if(key.getRef().equals("UP")) {this.moveHalt("N");}
             
-            // Charge
-            if(key.getRef().equals("CTRL")) {this.charge(false);}
             if(this.getAction().equals("GUARD"))
             {
                 if(this.keyboard.getKeyObject("ALT").isPressed()) {this.guard();}
@@ -61,7 +54,14 @@ public class EntityPlayer extends Entity
     
     public void keyReleased(InputKeyboardKey key)
     {
+        // Walk
+        if(key.getRef().equals("DOWN")) {this.moveHalt("S");}
+        if(key.getRef().equals("LEFT")) {this.moveHalt("W");}
+        if(key.getRef().equals("RIGHT")) {this.moveHalt("E");}
+        if(key.getRef().equals("UP")) {this.moveHalt("N");}
         
+        // Charge
+        if(key.getRef().equals("CTRL")) {this.charge(false);}
     }
     
     public void tick()

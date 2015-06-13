@@ -4,6 +4,7 @@ import audio.AudioManager;
 import file.FileRead;
 import gfx.Theme;
 import input.InputKeyboard;
+import input.InputKeyboardKey;
 import input.InputMouse;
 import state.State;
 import state.StateInit;
@@ -121,6 +122,17 @@ public class Application extends JPanel implements Runnable
     public static Font getThemeFont(String ref)
     {
         return gfxTheme.getFont(ref);
+    }
+    
+    public static void keyPressed(InputKeyboardKey key)
+    {
+        if(key.getRef().equals("ESCAPE")) {System.exit(0);}
+        else {appState.keyPressed(key);}
+    }
+    
+    public static void keyReleased(InputKeyboardKey key)
+    {
+        appState.keyReleased(key);
     }
     
     public static void loadAudio()
@@ -251,13 +263,6 @@ public class Application extends JPanel implements Runnable
 
     private void tick()
     {
-        // Escape Key
-        if(Application.getInputKeyboard().getKeyPressed() == "ESCAPE")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            System.exit(0);
-        }
-        
         // State Tick
         this.getState().tick();
     }

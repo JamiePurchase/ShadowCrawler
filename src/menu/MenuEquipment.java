@@ -31,16 +31,9 @@ public class MenuEquipment extends Menu
     
     public void keyPressed(InputKeyboardKey key)
     {
-        if(Application.getInputKeyboard().getKeyPressed() == "ENTER")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.getState().pauseDone();
-        }
-        if(Application.getInputKeyboard().getKeyPressed() == "SPACE")
-        {
-            Application.getInputKeyboard().keyPressedDone();
-            this.tempWeapon = 5;
-        }
+        // TEMPORARY
+        if(key.getRef().equals("ENTER")) {this.getState().pauseDone();}
+        if(key.getRef().equals("SPACE")) {this.tempWeapon = 5;}
     }
     
     public void initOptions()
