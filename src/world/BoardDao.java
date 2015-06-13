@@ -26,6 +26,9 @@ public class BoardDao
         Tile wall2 = new Tile(crypt, 2, 2, true);
         
         // Temp
+        board.setTerrain(0, 0, ground);
+        
+        // Temp
         board.setTerrain(19, 15, ground);
         board.setTerrain(20, 15, ground);
         board.setTerrain(21, 15, ground);
@@ -144,6 +147,9 @@ public class BoardDao
         board.setTerrain(32, 13, new Tile(crypt, 7, 2, true));
         board.setTerrain(31, 14, new Tile(crypt, 6, 3, true));
         board.setTerrain(32, 14, new Tile(crypt, 7, 3, true));
+        
+        // Vectors
+        board.addVector(new Vector("", 608, 384, 320, 128, true));
         
         return board;
     }

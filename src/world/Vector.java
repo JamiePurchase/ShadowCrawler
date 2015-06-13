@@ -1,5 +1,7 @@
 package world;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
 public class Vector
@@ -28,6 +30,12 @@ public class Vector
     public Rectangle getVector()
     {
         return this.area;
+    }
+    
+    public void render(Graphics gfx)
+    {
+        gfx.setColor(Color.cyan);
+        gfx.drawRect(this.area.x, this.area.y, this.area.width, this.area.height);
     }
     
 }

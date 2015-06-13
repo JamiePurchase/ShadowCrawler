@@ -81,6 +81,11 @@ public class Board
         this.vectors = new ArrayList<Vector>();
     }
     
+    public void addVector(Vector vector)
+    {
+        this.vectors.add(vector);
+    }
+    
     public void damageInflict(Damage damage)
     {
         for(int x = 0; x < damage.getSizeX(); x++)
@@ -247,6 +252,9 @@ public class Board
         this.renderBackground(gfx);
         this.renderTerrain(gfx);
         
+        // Development
+        this.renderVectors(gfx);
+        
         if(!this.editor)
         {
             // Temp
@@ -306,6 +314,14 @@ public class Board
             this.terrainImageReady = true;
         }
         gfx.drawImage(this.terrainImage, this.paneX, this.paneY, null);
+    }
+    
+    private void renderVectors(Graphics gfx)
+    {
+        for(int v = 0; v < this.vectors.size(); v++)
+        {
+            this.vectors.get(v).render(gfx);
+        }
     }
     
     private void renderVisuals(Graphics gfx)
