@@ -126,8 +126,10 @@ public class Application extends JPanel implements Runnable
     
     public static void keyPressed(InputKeyboardKey key)
     {
-        if(key.getRef().equals("ESCAPE")) {System.exit(0);}
-        else {appState.keyPressed(key);}
+        /*if(key.getRef().equals("ESCAPE")) {System.exit(0);}
+        else {appState.keyPressed(key);}*/
+        
+        appState.keyPressed(key);
     }
     
     public static void keyReleased(InputKeyboardKey key)
@@ -173,7 +175,7 @@ public class Application extends JPanel implements Runnable
     
     public static void resumeState()
     {
-        appState = appStateWait;
+        setState(appStateWait);
         appStateWait = null;
     }
     

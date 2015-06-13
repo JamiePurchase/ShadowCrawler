@@ -6,13 +6,14 @@ import gfx.Theme;
 import java.awt.Color;
 import java.awt.Graphics;
 import state.StateBoard;
+import state.StatePause;
 
 public class MenuPause extends Menu
 {
     
-    public MenuPause(StateBoard board)
+    public MenuPause(StatePause state)
     {
-        super(board);
+        super(state);
     }
     
     public void initOptions()
@@ -69,12 +70,12 @@ public class MenuPause extends Menu
     public void tickSelect()
     {
         System.out.println("Tick Select (optCursor = " + this.optCursor + ")");
-        if(this.optCursor == 0) {this.changeMenu("QUESTS");}
-        if(this.optCursor == 1) {this.changeMenu("INVENTORY");}
-        if(this.optCursor == 2) {this.changeMenu("EQUIPMENT");}
-        if(this.optCursor == 3) {this.changeMenu("ABILITIES");}
-        if(this.optCursor == 4) {this.changeMenu("OPTIONS");}
-        if(this.optCursor == 5) {this.exit();}
+        if(this.optCursor == 0) {this.parent.setMenuState(new MenuQuests(this.parent));}
+        if(this.optCursor == 1) {this.parent.setMenuState(new MenuInventory(this.parent));}
+        if(this.optCursor == 2) {this.parent.setMenuState(new MenuEquipment(this.parent));}
+        if(this.optCursor == 3) {this.parent.setMenuState(new MenuAbilities(this.parent));}
+        if(this.optCursor == 4) {this.parent.setMenuState(new MenuOptions(this.parent));}
+        if(this.optCursor == 5) {Application.resumeState();}
     }
     
 }

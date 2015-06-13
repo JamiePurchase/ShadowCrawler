@@ -15,11 +15,14 @@ public class Theme
         // Colour Pallette
         this.pallete = new HashMap<String, Color>();
         pallete.put("DAMAGEVISUAL", Drawing.getColorRGB(150, 50, 50));
+        pallete.put("MARGIN", Drawing.getColorRGB(35, 70, 35));
+        pallete.put("PARCHMENT", Drawing.getColorRGB(225, 220, 130));
         pallete.put("PROGRESSBKG", Drawing.getColorRGB(0, 0, 0));
         pallete.put("PROGRESSFORE", Drawing.getColorRGB(100, 100, 100));
         pallete.put("STANDARD", Drawing.getColorRGB(0, 0, 0));
         pallete.put("TEXT", Drawing.getColorRGB(220, 220, 220));
         pallete.put("TEXTSHADOW", Drawing.getColorRGB(50, 50, 50));
+        
         
         // Typeface Styles
         this.typeface = new HashMap<String, Font>();

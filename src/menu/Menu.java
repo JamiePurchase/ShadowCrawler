@@ -6,12 +6,12 @@ import gfx.Drawing;
 import input.InputKeyboard;
 import input.InputKeyboardKey;
 import java.awt.Graphics;
-import state.StateBoard;
+import state.StatePause;
 
 public abstract class Menu
 {
-    // Board
-    public StateBoard parent;
+    // State
+    public StatePause parent;
     
     // Options
     public int optCursor, optCursorTickNow, optCursorTickMax, optCursorFrameNow, optCursorFrameMax;
@@ -21,7 +21,7 @@ public abstract class Menu
     public InputKeyboard keyboard;
     private boolean keyboardListen;
     
-    public Menu(StateBoard parent)
+    public Menu(StatePause parent)
     {
         this.parent = parent;
         
@@ -38,17 +38,7 @@ public abstract class Menu
         this.keyboardListen = true;
     }
     
-    public void changeMenu(String menu)
-    {
-        this.parent.pauseMenu(menu);
-    }
-    
-    public void exit()
-    {
-        this.parent.pauseDone();
-    }
-    
-    public StateBoard getState()
+    public StatePause getState()
     {
         return this.parent;
     }

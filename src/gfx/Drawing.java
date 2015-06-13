@@ -59,6 +59,12 @@ public class Drawing
         fillScreen(gfx, 0, 0, 0);
     }
 
+    public static void fillScreen(Graphics gfx, String colour)
+    {
+        gfx.setColor(Theme.getColour(colour));
+        gfx.fillRect(0, 0, Application.getAppWidth(), Application.getAppHeight());
+    }
+
     public static void fillScreen(Graphics gfx, int colorR, int colorG, int colorB)
     {
         gfx.setColor(getColorRGB(colorR, colorG, colorB));

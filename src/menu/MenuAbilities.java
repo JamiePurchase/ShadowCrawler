@@ -1,14 +1,14 @@
 package menu;
 
 import java.awt.Graphics;
-import state.StateBoard;
+import state.StatePause;
 
 public class MenuAbilities extends Menu
 {
     
-    public MenuAbilities(StateBoard board)
+    public MenuAbilities(StatePause pause)
     {
-        super(board);
+        super(pause);
     }
     
     public void initOptions()

@@ -51,17 +51,27 @@ public class StateTitle extends State
     
     public void render(Graphics gfx)
     {
-        // Background
-        Drawing.fillScreen(gfx, 20, 75, 35);
-        Drawing.fillScreen(gfx, 200, 200, 200); // temp to reduce edge issue with Jakken portrait
-        gfx.drawImage(Drawing.getImage("logo/titleWide.png"), 0, 100, null);
-        
+        renderBackground(gfx);
+        renderTitle(gfx);
+        renderOptions(gfx);
+        renderInterface(gfx);
+    }
+    
+    private void renderBackground(Graphics gfx)
+    {
+        Drawing.fillScreen(gfx, "PARCHMENT");
+    }
+    
+    private void renderInterface(Graphics gfx)
+    {
+        this.uiInfo.render(gfx);
+    }
+    
+    private void renderOptions(Graphics gfx)
+    {        
         // Temp (Jakken)
         gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 40, 220, null);
         gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 40, 220, null);
-        
-        // Info Bar
-        this.uiInfo.render(gfx);
         
         // Options
         gfx.setFont(Theme.getFont("MENUOPTION"));
@@ -73,6 +83,11 @@ public class StateTitle extends State
         if(cursorFrame == 2) {cursorX = 1134;}
         if(cursorFrame == 4) {cursorX = 1136;}
         gfx.drawImage(Drawing.getImage("interface/menuCursor1.png"), cursorX, (this.cursorNow * 50) + 328, null);
+    }
+    
+    private void renderTitle(Graphics gfx)
+    {
+        gfx.drawImage(Drawing.getImage("logo/titleWide.png"), 0, 85, null);
     }
     
     public void terminate()

@@ -2,14 +2,14 @@ package menu;
 
 import gfx.Theme;
 import java.awt.Graphics;
-import state.StateBoard;
+import state.StatePause;
 
 public class MenuQuests extends Menu
 {
     
-    public MenuQuests(StateBoard board)
+    public MenuQuests(StatePause pause)
     {
-        super(board);
+        super(pause);
     }
     
     public void initOptions()

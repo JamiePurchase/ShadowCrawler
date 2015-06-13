@@ -6,16 +6,16 @@ import gfx.Theme;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import player.PartyCharacter;
-import state.StateBoard;
+import state.StatePause;
 
 public class MenuInventory extends Menu
 {
     // TEMP
     private PartyCharacter character;
     
-    public MenuInventory(StateBoard board)
+    public MenuInventory(StatePause pause)
     {
-        super(board);
+        super(pause);
         
         // TEMP
         character = new PartyCharacter("Jakken");

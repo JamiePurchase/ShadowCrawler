@@ -7,7 +7,7 @@ import input.InputKeyboardKey;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import player.PartyCharacter;
-import state.StateBoard;
+import state.StatePause;
 
 public class MenuEquipment extends Menu
 {
@@ -17,9 +17,9 @@ public class MenuEquipment extends Menu
     // temp
     private int tempWeapon;
     
-    public MenuEquipment(StateBoard board)
+    public MenuEquipment(StatePause pause)
     {
-        super(board);
+        super(pause);
         
         // TEMP
         character = new PartyCharacter("Jakken");
@@ -32,7 +32,7 @@ public class MenuEquipment extends Menu
     public void keyPressed(InputKeyboardKey key)
     {
         // TEMPORARY
-        if(key.getRef().equals("ENTER")) {this.getState().pauseDone();}
+        //if(key.getRef().equals("ENTER")) {this.getState().pauseDone();}
         if(key.getRef().equals("SPACE")) {this.tempWeapon = 5;}
     }
     

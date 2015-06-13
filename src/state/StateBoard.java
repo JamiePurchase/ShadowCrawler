@@ -74,10 +74,11 @@ public class StateBoard extends State
         if(this.pause) {this.pauseMenu.keyPressed(key);}
         else
         {
+            if(key.getRef().equals("ESCAPE")) {Application.setState(new StateMap(), true);}
             if(key.getRef().equals("ENTER") && !this.pauseDisabled)
             {
-                this.pauseInit();
-                //key.release();
+                Application.setState(new StatePause(this.board.getTerrainImage()));
+                //this.pauseInit();
             }
             this.board.keyPressed(key);
         }
@@ -87,28 +88,6 @@ public class StateBoard extends State
     {
         if(this.pause) {this.pauseMenu.keyReleased(key);}
         else {this.board.keyReleased(key);}
-    }
-    
-    public void pauseDone()
-    {
-        this.pause = false;
-        this.pauseMenu = null;
-    }
-    
-    public void pauseInit()
-    {
-        this.pause = true;
-        this.pauseMenu = new MenuPause(this);
-        //this.pauseMenu = new MenuEquipment(this);
-    }
-    
-    public void pauseMenu(String menu)
-    {
-        if(menu == "PAUSE") {this.pauseMenu = new MenuPause(this);}
-        if(menu == "QUEST") {this.pauseMenu = new MenuQuests(this);}
-        if(menu == "INVENTORY") {this.pauseMenu = new MenuInventory(this);}
-        if(menu == "EQUIPMENT") {this.pauseMenu = new MenuEquipment(this);}
-        if(menu == "OPTIONS") {this.pauseMenu = new MenuOptions(this);}
     }
     
     public void render(Graphics gfx)
@@ -125,7 +104,7 @@ public class StateBoard extends State
     
     public void renderBorder(Graphics gfx)
     {
-        Drawing.fillScreen(gfx, 35, 70, 35);
+        Drawing.fillScreen(gfx, "MARGIN");
         /*gfx.setColor(Color.BLACK);
         gfx.drawRect(10, 15, 1346, 738);*/
     }
