@@ -95,6 +95,11 @@ public class Entity
         return this.busy;
     }
     
+    public String getFace()
+    {
+        return this.face;
+    }
+    
     public Rectangle getMesh()
     {
         return new Rectangle(this.getPosX() - this.meshOffsetX, this.getPosY() - this.meshOffsetY, this.meshSizeX, this.meshSizeY);
@@ -234,23 +239,12 @@ public class Entity
     
     public void move(String direction)
     {
-        // Debug
-        Console.echo(this.ref + " is moving " + direction);
-        
         this.setDirection(direction);
-        //if(this.moveValid(direction))
-        //{
-
-            // temp
-            this.busy = true;
-        
-            this.setAction("WALK");
-        //}
-        //this.moveCollide();
-        Console.echo(this.ref + " action = " + this.action);
+        this.setAction("WALK");
+        this.busy = true;
     }
     
-    public void moveHalt(String direction)
+    public void moveHalt()
     {
         this.setAction("IDLE");
         this.busy = false;

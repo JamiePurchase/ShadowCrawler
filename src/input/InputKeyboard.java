@@ -21,19 +21,19 @@ public class InputKeyboard implements KeyListener
         this.keyboard = new HashMap<String, InputKeyboardKey>();
         
         // Command Keys
-        this.keyboard.put("ENTER", new InputKeyboardKey("ENTER"));
-        this.keyboard.put("ESCAPE", new InputKeyboardKey("ESCAPE"));
-        this.keyboard.put("SPACE", new InputKeyboardKey("SPACE"));
+        this.keyboard.put("ENTER", new InputKeyboardKey("ENTER", "COMMAND"));
+        this.keyboard.put("ESCAPE", new InputKeyboardKey("ESCAPE", "COMMAND"));
+        this.keyboard.put("SPACE", new InputKeyboardKey("SPACE", "COMMAND"));
         
         // Directional Keys
-        this.keyboard.put("DOWN", new InputKeyboardKey("DOWN"));
-        this.keyboard.put("LEFT", new InputKeyboardKey("LEFT"));
-        this.keyboard.put("RIGHT", new InputKeyboardKey("RIGHT"));
-        this.keyboard.put("UP", new InputKeyboardKey("UP"));
+        this.keyboard.put("DOWN", new InputKeyboardKey("DOWN", "DIRECTION"));
+        this.keyboard.put("LEFT", new InputKeyboardKey("LEFT", "DIRECTION"));
+        this.keyboard.put("RIGHT", new InputKeyboardKey("RIGHT", "DIRECTION"));
+        this.keyboard.put("UP", new InputKeyboardKey("UP", "DIRECTION"));
         
         // Ability Keys
-        this.keyboard.put("CTRL", new InputKeyboardKey("CTRL"));
-        this.keyboard.put("ALT", new InputKeyboardKey("ALT"));
+        this.keyboard.put("CTRL", new InputKeyboardKey("CTRL", "ABILITY"));
+        this.keyboard.put("ALT", new InputKeyboardKey("ALT", "ABILITY"));
     }
     
     private String getKeyName(KeyEvent e)
@@ -69,7 +69,7 @@ public class InputKeyboard implements KeyListener
 
     public void keyPressed(KeyEvent e)
     {
-        Console.echoRed("Key Pressed : " + this.getKeyName(e));
+        //Console.echoRed("Key Pressed : " + this.getKeyName(e));
         if(!this.getKeyName(e).equals("UNKNOWN"))
         {
             Application.keyPressed(this.keyboard.get(this.getKeyName(e)));
@@ -78,7 +78,7 @@ public class InputKeyboard implements KeyListener
 
     public void keyReleased(KeyEvent e)
     {
-        Console.echoRed("Key Released : " + this.getKeyName(e));
+        //Console.echoRed("Key Released : " + this.getKeyName(e));
         if(!this.getKeyName(e).equals("UNKNOWN"))
         {
             Application.keyReleased(this.keyboard.get(this.getKeyName(e)));

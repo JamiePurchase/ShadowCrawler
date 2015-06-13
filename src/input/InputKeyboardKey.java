@@ -2,18 +2,24 @@ package input;
 
 public class InputKeyboardKey
 {
-    private String ref;
+    private String ref, type;
     private boolean pressed;
     
-    public InputKeyboardKey(String ref)
+    public InputKeyboardKey(String ref, String type)
     {
         this.ref = ref;
+        this.type = type;
         this.pressed = false;
     }
     
     public String getRef()
     {
         return this.ref;
+    }
+    
+    public String getType()
+    {
+        return this.type;
     }
     
     public boolean isPressed()

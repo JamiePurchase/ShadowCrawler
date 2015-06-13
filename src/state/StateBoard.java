@@ -16,6 +16,7 @@ import menu.MenuPause;
 import menu.MenuQuests;
 import player.Campaign;
 import ui.HudCharacter;
+import ui.HudMinimap;
 import ui.MessageBar;
 import ui.MessageBarChat;
 import world.Board;
@@ -35,6 +36,7 @@ public class StateBoard extends State
     // HUD Display
     private boolean hudRender;
     private HudCharacter hudCharacter;
+    private HudMinimap hudMinimap;
     
     // Message Bar
     private MessageBar chatMessage;
@@ -57,6 +59,7 @@ public class StateBoard extends State
         // HUD Display
         this.hudRender = true;
         this.hudCharacter = new HudCharacter();
+        this.hudMinimap = new HudMinimap(this.board, Application.getCampaign());
         
         // Message Bar
         this.chatMessage = null;
@@ -130,6 +133,9 @@ public class StateBoard extends State
         this.hudCharacter.render(gfx);
         
         // Equipment
+        
+        // Minimap
+        this.hudMinimap.render(gfx);
     }
     
     public void renderDisplayOld(Graphics gfx)

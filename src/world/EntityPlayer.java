@@ -55,10 +55,7 @@ public class EntityPlayer extends Entity
     public void keyReleased(InputKeyboardKey key)
     {
         // Walk
-        if(key.getRef().equals("DOWN")) {this.moveHalt("S");}
-        if(key.getRef().equals("LEFT")) {this.moveHalt("W");}
-        if(key.getRef().equals("RIGHT")) {this.moveHalt("E");}
-        if(key.getRef().equals("UP")) {this.moveHalt("N");}
+        if(key.getType().equals("DIRECTION")) {this.moveHalt();}
         
         // Charge
         if(key.getRef().equals("CTRL")) {this.charge(false);}

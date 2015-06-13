@@ -125,6 +125,11 @@ public class Board
         }
     }
     
+    public EntityPlayer getPlayer()
+    {
+        return this.entityPlayer;
+    }
+    
     public String getFile()
     {
         return this.getFile(false);
