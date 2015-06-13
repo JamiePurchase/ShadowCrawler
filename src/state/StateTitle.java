@@ -70,8 +70,11 @@ public class StateTitle extends State
     private void renderOptions(Graphics gfx)
     {        
         // Temp (Jakken)
-        gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 40, 220, null);
-        gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 40, 220, null);
+        gfx.drawImage(Drawing.getImage("portrait/Jakken.png"), 300, 220, null);
+        gfx.drawImage(Drawing.getImage("portrait/Jakken_Sword1.png"), 300, 220, null);
+        
+        // Temp (Sofeli)
+        gfx.drawImage(Drawing.getImage("portrait/Sofeli.png"), 0, 220, null);
         
         // Options
         gfx.setFont(Theme.getFont("MENUOPTION"));

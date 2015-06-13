@@ -35,6 +35,7 @@ public class Board
     // Entities
     public EntityPlayer entityPlayer;
     private ArrayList<EntityEnemy> entityEnemies;
+    private ArrayList<EntityContainer> entityContainers;
     private ArrayList<Visual> entityVisuals;
     
     // Vectors
@@ -71,11 +72,15 @@ public class Board
         this.tempFrameMax = 6;
         
         // Entities: Player
-        this.entityPlayer = new EntityPlayer("JAKKEN", this, 512, 256, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
+        this.entityPlayer = new EntityPlayer("JAKKEN", this, 512, 512, new Tileset("spr|chr|Jakken", Drawing.getImage("spritesheet/character/Jakken/Jakken.png"), 64, 64, 13, 42));
+        this.entityPlayer.setMesh(32, 32, -16, -32);
         
         // Entities: Enemies
         this.entityEnemies = new ArrayList<EntityEnemy>();
         this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 0, 0, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
+        
+        // Entities: Containers
+        this.entityContainers = new ArrayList<EntityContainer>();
         
         // Entities: Visual
         this.entityVisuals = new ArrayList<Visual>();
@@ -85,6 +90,16 @@ public class Board
         
         // Damage
         this.damageMarkers = new ArrayList<DamageMarker>();
+    }
+    
+    public void addContainer(EntityContainer container)
+    {
+        this.entityContainers.add(container);
+    }
+    
+    public void addContainer(String ref, int tileX, int tileY, String template)
+    {
+        this.entityContainers.add(ContainerDao.createContainer(ref, this, tileX * 32, tileY * 32, template));
     }
     
     public void addVector(String ref, Rectangle area, boolean solid)
@@ -269,13 +284,57 @@ public class Board
         return true;
     }
     
-    public String getVectorIntersect(Rectangle rect)
+    public String getIntersect(Rectangle rect)
+    {
+        // Enemies
+        String result = getIntersectEnemies(rect);
+        if(result != null) {return "ENE|" + result;}
+        
+        // Containers
+        result = getIntersectContainers(rect);
+        if(result != null) {return "CON|" + result;}
+        
+        // Vectors
+        result = getIntersectVectors(rect, true);
+        if(result != null) {return "VCT|" + result;}
+        
+        // No Intersection
+        return null;
+    }
+    
+    public String getIntersectContainers(Rectangle rect)
+    {
+        for(int c = 0; c < entityContainers.size(); c++)
+        {
+            if(entityContainers.get(c).getMesh().intersects(rect))
+            {
+                return entityContainers.get(c).getRef();
+            }
+        }
+        return null;
+    }
+    
+    public String getIntersectEnemies(Rectangle rect)
+    {
+        for(int e = 0; e < entityEnemies.size(); e++)
+        {
+            if(entityEnemies.get(e).getMesh().intersects(rect))
+            {
+                return entityEnemies.get(e).getRef();
+            }
+        }
+        return null;
+    }
+    
+    public String getIntersectVectors(Rectangle rect, boolean physical)
     {
         for(int v = 0; v < vectors.size(); v++)
         {
             if(vectors.get(v).getVector().intersects(rect))
             {
-                return vectors.get(v).getRef();
+                // Looking for a collision? (ignore other vectors while physical = true)
+                if(physical) {if(vectors.get(v).getSolid()) {return vectors.get(v).getRef();}}
+                else {return vectors.get(v).getRef();}
             }
         }
         return null;
@@ -312,6 +371,7 @@ public class Board
             this.entityPlayer.render(gfx);
 
             if(this.entityEnemies.size() > 0) {this.renderEnemies(gfx);}
+            if(this.entityContainers.size() > 0) {this.renderContainers(gfx);}
             if(this.entityVisuals.size() > 0) {this.renderVisuals(gfx);}
         }
         else {this.renderEditor(gfx);}
@@ -321,6 +381,14 @@ public class Board
     {
         gfx.setColor(this.background);
         gfx.fillRect(this.paneX, this.paneY, this.paneW, this.paneH);
+    }
+    
+    private void renderContainers(Graphics gfx)
+    {
+        for(int c = 0; c < this.entityContainers.size(); c++)
+        {
+            this.entityContainers.get(c).render(gfx);
+        }
     }
     
     private void renderDamageMarkers(Graphics gfx)

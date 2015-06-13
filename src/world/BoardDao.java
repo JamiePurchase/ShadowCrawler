@@ -228,6 +228,9 @@ public class BoardDao
         board.setTerrain(31, 14, new Tile(crypt, 6, 3, true));
         board.setTerrain(32, 14, new Tile(crypt, 7, 3, true));
         
+        // Containers
+        board.addContainer("", 13, 17, "JAR_TOMB");
+        
         // Vectors
         board.addVector("", 9, 11, 14, 4, true);
         board.addVector("DOOR1", 23, 13, 2, 2, true, new BoardJoin("Gateway", 5));

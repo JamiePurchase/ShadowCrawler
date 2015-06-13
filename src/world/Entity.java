@@ -236,6 +236,11 @@ public class Entity
         return this.posY;
     }
     
+    public String getRef()
+    {
+        return this.ref;
+    }
+    
     public void guard()
     {
         this.setAction("GUARD");
@@ -270,7 +275,7 @@ public class Entity
     
     private void movePush(String direction)
     {
-        if(this.board.getVectorIntersect(this.getMeshTarget(direction)) == null)
+        if(this.board.getIntersect(this.getMeshTarget(direction)) == null)
         {
             if(this.face == "N") {this.posY -= 4;}
             if(this.face == "S") {this.posY += 4;}
@@ -465,6 +470,14 @@ public class Entity
     public void setDirection(String direction)
     {
         this.face = direction;
+    }
+    
+    public void setMesh(int wide, int high, int offsetX, int offsetY)
+    {
+        this.meshSizeX = wide;
+        this.meshSizeY = high;
+        this.meshOffsetX = offsetX;
+        this.meshOffsetY = offsetY;
     }
     
     public void tick()

@@ -15,6 +15,7 @@ import menu.MenuOptions;
 import menu.MenuPause;
 import menu.MenuQuests;
 import player.Campaign;
+import ui.HudActionHint;
 import ui.HudCharacter;
 import ui.HudMinimap;
 import ui.MessageBar;
@@ -37,6 +38,7 @@ public class StateBoard extends State
     private boolean hudRender;
     private HudCharacter hudCharacter;
     private HudMinimap hudMinimap;
+    private HudActionHint hudActionHint;
     
     // Message Bar
     private MessageBar chatMessage;
@@ -60,6 +62,7 @@ public class StateBoard extends State
         this.hudRender = true;
         this.hudCharacter = new HudCharacter(this.board, Application.getCampaign());
         this.hudMinimap = new HudMinimap(this.board, Application.getCampaign());
+        this.hudActionHint = new HudActionHint(this.board, Application.getCampaign());
         
         // Message Bar
         this.chatMessage = null;
@@ -67,6 +70,11 @@ public class StateBoard extends State
         
         // Temp
         Application.setCampaign(new Campaign());
+    }
+    
+    public HudActionHint getHudActionHint()
+    {
+        return this.hudActionHint;
     }
     
     public void keyPressed(InputKeyboardKey key)
@@ -123,6 +131,9 @@ public class StateBoard extends State
         
         // Minimap
         this.hudMinimap.render(gfx);
+        
+        // Action Hint
+        this.hudActionHint.render(gfx);
     }
     
     public void renderDisplayOld(Graphics gfx)
