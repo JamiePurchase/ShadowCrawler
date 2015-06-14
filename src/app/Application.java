@@ -265,6 +265,9 @@ public class Application extends JPanel implements Runnable
 
     private void tick()
     {
+        // Audio Manager
+        this.appAudio.tick();
+        
         // State Tick
         this.getState().tick();
     }

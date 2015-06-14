@@ -16,6 +16,8 @@ public class StateTitle extends State
     
     // Interface
     private HintBar uiInfo;
+    private float fadeValue;
+    private boolean fadeActive;
     
     public StateTitle()
     {
@@ -25,6 +27,8 @@ public class StateTitle extends State
         this.cursorTickMax = 6;
         this.cursorFrame = 1;
         this.uiInfo = this.getInfo();
+        this.fadeValue = 0.00f;
+        this.fadeActive = false;
         Application.getAudio().playMusic("Title");
     }
     
@@ -38,7 +42,7 @@ public class StateTitle extends State
         if(key.getRef().equals("ENTER"))
         {
             //if(this.cursorNow == 1) {Application.setState(new StateBoard());}
-            if(this.cursorNow == 1) {Application.setState(new StateScene());}
+            if(this.cursorNow == 1) {transition();}
             //if(this.cursorNow == 2) {}
             //if(this.cursorNow == 3) {Application.setState(new StateTutorial());}
             //if(this.cursorNow == 4) {Application.setState(new StateLegends());}
@@ -60,6 +64,13 @@ public class StateTitle extends State
         renderTitle(gfx);
         renderOptions(gfx);
         renderInterface(gfx);
+        
+        // Fade
+        if(this.fadeActive)
+        {
+            try {Drawing.drawImageOpaque(gfx, Drawing.getImage("scene/fade.png"), 0, 0, this.fadeValue);}
+            catch(IllegalArgumentException e) {Console.echoRed("" + e);}
+        }
     }
     
     private void renderBackground(Graphics gfx)
@@ -116,6 +127,27 @@ public class StateTitle extends State
             this.cursorFrame += 1;
             if(this.cursorFrame > 4) {this.cursorFrame = 1;}
         }
+        
+        // Fade
+        if(this.fadeActive)
+        {
+            this.fadeValue += 0.03f;
+            if(this.fadeValue >= 1.00f)
+            {
+                this.fadeValue = 1.00f;
+                transitionDone();
+            }
+        }
+    }
+    
+    private void transition()
+    {
+        this.fadeActive = true;
+    }
+    
+    private void transitionDone()
+    {
+        Application.setState(new StateScene());
     }
     
 }

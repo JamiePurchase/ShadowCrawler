@@ -1,5 +1,6 @@
 package audio;
 
+import app.Console;
 import file.FileRead;
 import java.io.IOException;
 
@@ -123,6 +124,7 @@ public class AudioManager
         {
             soundTick += 1;
             //if(soundTick>1){stopSound();}
+            if(!AudioPlayer.isPlaying(soundFile)) {this.stopSound();}
         }
     }
 }

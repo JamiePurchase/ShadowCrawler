@@ -21,9 +21,14 @@ public class StateScene extends State
     private MessageBarChat chatObject;
     private boolean chatActive;
     
-    // Time
+    // Scene
     private int sceneStage;
+    private float sceneFade;
+    private boolean sceneFadeTransition;
+    
+    // Tick
     private int tickNow, tickMax;
+    private boolean tickActive;
     
     public StateScene()
     {
@@ -38,9 +43,18 @@ public class StateScene extends State
         this.chatObject = null;
         this.chatActive = false;
         
-        // Time
+        // Scene
         this.sceneStage = 0;
-        this.setTick(90);
+        this.sceneFade = 1.00f;
+        this.sceneFadeTransition = false;
+        
+        // Tick
+        this.tickNow = 0;
+        this.tickMax = 0;
+        this.tickActive = false;
+        
+        // Scene
+        this.sceneAdvance();
     }
     
     public void keyPressed(InputKeyboardKey key)
@@ -58,6 +72,7 @@ public class StateScene extends State
         renderBackground(gfx);
         renderActors(gfx);
         if(this.chatActive) {this.chatObject.render(gfx);}
+        if(this.sceneFade > 0.8f) {renderFade(gfx);}
     }
     
     private void renderActors(Graphics gfx)
@@ -73,25 +88,59 @@ public class StateScene extends State
         gfx.drawImage(Drawing.getImage("scene/Q1.png"), 0, 0, null);
     }
     
+    private void renderFade(Graphics gfx)
+    {
+        Drawing.drawImageOpaque(gfx, Drawing.getImage("scene/fade.png"), 0, 0, this.sceneFade);
+    }
+    
     public void sceneAdvance()
     {
+        if(this.sceneStage == 0)
+        {
+            this.setTick(90);
+        }
         if(this.sceneStage == 1)
         {
-            Application.getAudio().playSound("Q1S1");
-            this.chatObject = new MessageBarChat("Sofeli", "Wake up, you lazy sack of shit...","There's a letter from the boss.","Sofeli");
-            this.chatActive = true;
-            this.setTick(90);
+            Application.getAudio().playSound("S1D1");
+            this.setTick(50);
         }
         if(this.sceneStage == 2)
         {
-            this.chatActive = false;
+            this.setChatDone();
+            this.sceneFadeTransition = true;
+            this.setTick(20);
         }
+        if(this.sceneStage == 3)
+        {
+            this.sceneFadeTransition = false;
+            this.setChat("Sofeli", "S1D2", "Wake up, you lazy sack of shit...","There's a letter from the boss.","Sofeli");
+            this.setTick(50);
+            // NOTE: it may be wise to have an independant tick count on the chat display
+            // so that waiting for it to close doesn't get in the way
+        }
+        if(this.sceneStage == 4)
+        {
+            this.setChatDone();
+        }
+    }
+    
+    private void setChat(String speaker, String sound, String text1, String text2, String portrait)
+    {
+        Application.getAudio().playSound(sound);
+        this.chatObject = new MessageBarChat(speaker, text1, text2, portrait);
+        this.chatActive = true;
+    }
+    
+    private void setChatDone()
+    {
+        this.chatActive = false;
     }
     
     private void setTick(int max)
     {
         this.tickNow = 0;
         this.tickMax = max;
+        this.tickActive = true;
         // NOTE: need to use timestamps to say things like activate in ten seconds
     }
     
@@ -102,12 +151,39 @@ public class StateScene extends State
     
     public void tick()
     {
+        if(this.tickActive) {this.tickTime();}
+        if(this.sceneFadeTransition) {this.tickFade();}
+    }
+    
+    public void tickFade()
+    {
+        if(sceneStage == 2)
+        {
+            this.sceneFade -= 0.02f;
+            if(this.sceneFade <= 0.10f)
+            {
+                this.sceneFade = 0.00f;
+                this.sceneFadeTransition = false;
+            }
+        }
+    }
+    
+    public void tickTime()
+    {
         this.tickNow += 1;
         if(this.tickNow > this.tickMax)
         {
-            this.tickNow = 0;
-            this.sceneStage += 1;
-            this.sceneAdvance();
+            if(sceneStage == 2 && Application.getAudio().getSoundActive())
+            {
+                // Wait until the first dialogue is complete
+            }
+            else
+            {
+                this.tickNow = 0;
+                this.tickActive = false;
+                this.sceneStage += 1;
+                this.sceneAdvance();
+            }
         }
     }
     
