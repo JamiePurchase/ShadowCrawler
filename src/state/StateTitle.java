@@ -41,9 +41,12 @@ public class StateTitle extends State
     {
         if(key.getRef().equals("ENTER"))
         {
-            //if(this.cursorNow == 1) {Application.setState(new StateBoard());}
             if(this.cursorNow == 1) {transition();}
             //if(this.cursorNow == 2) {}
+            
+            // Development
+            if(this.cursorNow == 2) {Application.setState(new StateBoard());}
+            
             //if(this.cursorNow == 3) {Application.setState(new StateTutorial());}
             //if(this.cursorNow == 4) {Application.setState(new StateLegends());}
             //if(this.cursorNow == 5) {Application.setState(new StateOptions());}
@@ -115,6 +118,8 @@ public class StateTitle extends State
     public void terminate()
     {
         Application.getAudio().stopMusic();
+        // NOTE: should be fading this music out (and simultaneously fading in the next piece)
+        // it may be worth looking at what can be achieved by reducing the volume over ticks
     }
     
     public void tick()
@@ -147,7 +152,7 @@ public class StateTitle extends State
     
     private void transitionDone()
     {
-        Application.setState(new StateScene());
+        Application.setState(new StateLoader("CAMPAIGN_NEW"));
     }
     
 }

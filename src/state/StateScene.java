@@ -117,10 +117,19 @@ public class StateScene extends State
             this.setTick(50);
             // NOTE: it may be wise to have an independant tick count on the chat display
             // so that waiting for it to close doesn't get in the way
+            // NOTE: it may even be worth checking that the sound has finished playing
+            // and then closing the chat window a moment afterwards
         }
         if(this.sceneStage == 4)
         {
             this.setChatDone();
+            this.setTick(40);
+        }
+        if(this.sceneStage == 5)
+        {
+            Application.setState(new StateBoard());
+            // NOTE: should use the boardDAO and other classes to ensure all campaign data is loaded
+            // however most of the loading should have taken care of by the StateLoader
         }
     }
     
@@ -173,11 +182,7 @@ public class StateScene extends State
         this.tickNow += 1;
         if(this.tickNow > this.tickMax)
         {
-            if(sceneStage == 2 && Application.getAudio().getSoundActive())
-            {
-                // Wait until the first dialogue is complete
-            }
-            else
+            if(!Application.getAudio().getSoundActive())
             {
                 this.tickNow = 0;
                 this.tickActive = false;
