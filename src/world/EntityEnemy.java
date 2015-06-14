@@ -87,7 +87,6 @@ public class EntityEnemy extends Entity
             if(this.getMeshAttack().intersects(this.aiTarget.getMesh()))
             {
                 // Attack attempt
-                Console.echoRed(this.getRef() + " is attacking!");
                 this.attack();
             }
             else {this.moveTowards(this.aiTarget);}
@@ -96,6 +95,9 @@ public class EntityEnemy extends Entity
         {
             this.aiTarget = super.getBoard().getEntityAlly(0);
             this.aiReady = true;
+            // NOTE: the current plan is chase the enemy mindlessly and attack until depleted of energy
+            // clearly, this needs some more work: enemies should move back at times and the ai strategy
+            // should not be too repetitive - it would be better to see variation in their actions
         }
     }
     

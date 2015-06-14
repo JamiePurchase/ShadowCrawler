@@ -26,7 +26,7 @@ public class Entity
     
     // Stats
     private int statHealthNow, statHealthMax;
-    private int statEnergyNow, statEnergyMax;
+    private int statEnergyNow, statEnergyMax, statEnergyTick;
     private int statMysticNow, statMysticMax;
     
     // Status
@@ -70,6 +70,7 @@ public class Entity
         this.statHealthMax = 100;
         this.statEnergyNow = 100;
         this.statEnergyMax = 100;
+        this.statEnergyTick = 0;
         this.statMysticNow = 100;
         this.statMysticMax = 100;
         
@@ -85,8 +86,9 @@ public class Entity
     
     public void attack()
     {
-        this.setAction("ATTACK");
-        this.reduceEnergy(12);
+        if(this.reduceEnergy(12)) {this.setAction("ATTACK");}
+        else {this.setAction("IDLE");}
+        // NOTE: the AI strategy needs to take energy into account
     }
     
     public void cast()
@@ -354,10 +356,14 @@ public class Entity
         }
     }
     
-    private void reduceEnergy(int amount)
+    private boolean reduceEnergy(int amount)
     {
-        this.statEnergyNow -= amount;
-        if(this.statEnergyNow < 1) {this.statEnergyNow = 0;}
+        if(this.statEnergyNow >= amount)
+        {
+            this.statEnergyNow -= amount;
+            return true;
+        }
+        return false;
     }
     
     public void render(Graphics gfx)
@@ -375,6 +381,18 @@ public class Entity
     {
         gfx.setColor(Color.CYAN);
         gfx.drawRect(this.board.getScreenPosX(this.getMesh().x), this.board.getScreenPosY(this.getMesh().y), this.getMesh().width, this.getMesh().height);
+    }
+    
+    public void renewEnergy(int amount)
+    {
+        this.statEnergyNow += amount;
+        if(this.statEnergyNow > this.statEnergyMax) {this.statEnergyNow = this.statEnergyMax;}
+    }
+    
+    public void renewHealth(int amount)
+    {
+        this.statHealthNow += amount;
+        if(this.statHealthNow > this.statHealthMax) {this.statHealthNow = this.statHealthMax;}
     }
     
     public void setAction(String action)
@@ -567,6 +585,7 @@ public class Entity
     {
         this.tickAction();
         this.tickEffect();
+        this.tickEnergy();
     }
     
     private void tickAction()
@@ -609,6 +628,16 @@ public class Entity
         {
             actionEffects.get(e).tick();
         }*/
+    }
+    
+    private void tickEnergy()
+    {
+        this.statEnergyTick += 1;
+        if(this.statEnergyTick > 12)
+        {
+            this.statEnergyTick = 0;
+            this.renewEnergy(1);
+        }
     }
     
 }

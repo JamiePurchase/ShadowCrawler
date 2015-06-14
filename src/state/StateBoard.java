@@ -27,6 +27,7 @@ import world.BoardDao;
 public class StateBoard extends State
 {
     private Board board;
+    private boolean boardPause;
     
     // Pause Menu
     private boolean pause;
@@ -54,6 +55,7 @@ public class StateBoard extends State
         this.board = BoardDao.loadBoard("FILE", false);
         this.board.setInput(Application.getInputKeyboard(), Application.getInputMouse());
         this.board.setScroll(0, 0);
+        this.boardPause = false;
         //this.board.setScrollPlayer();
         
         // Pause Menu
@@ -80,6 +82,7 @@ public class StateBoard extends State
     
     public void formationEdit()
     {
+        this.boardPause = true;
         this.formationMenuActive = true;
     }
     
@@ -102,7 +105,6 @@ public class StateBoard extends State
         if(key.getRef().equals("ENTER") && !this.pauseDisabled)
         {
             Application.setState(new StatePause(this.board.getTerrainImage()));
-            //this.pauseInit();
         }
 
         // PAGEUP/PAGEDOWN: switch control between different allies
@@ -234,16 +236,19 @@ public class StateBoard extends State
     
     public void tick()
     {
-        if(this.pauseDisabled)
+        if(!boardPause)
         {
-            this.pauseDisabledTickNow += 1;
-            if(this.pauseDisabledTickMax  >= this.pauseDisabledTickMax)
+            if(this.pauseDisabled)
             {
-                this.pauseDisabled = false;
+                this.pauseDisabledTickNow += 1;
+                if(this.pauseDisabledTickMax  >= this.pauseDisabledTickMax)
+                {
+                    this.pauseDisabled = false;
+                }
             }
+            if(this.pause) {this.pauseMenu.tick();}
+            else {this.board.tick();}
         }
-        if(this.pause) {this.pauseMenu.tick();}
-        else {this.board.tick();}
     }
     
 }

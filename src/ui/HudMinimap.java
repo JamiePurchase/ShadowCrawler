@@ -62,7 +62,8 @@ public class HudMinimap
     
     private void renderEnemies(Graphics gfx)
     {
-        //
+        // NOTE: need to pick a range (this could be zoomable) and survery every entity in that area
+        // then just draw them accordingly to scale
     }
     
     private void renderPlayer(Graphics gfx)
