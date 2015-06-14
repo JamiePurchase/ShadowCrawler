@@ -20,7 +20,7 @@ public class StateTitle extends State
     public StateTitle()
     {
         this.cursorNow = 1;
-        this.cursorMax = 3;
+        this.cursorMax = 6;
         this.cursorTickNow = 0;
         this.cursorTickMax = 6;
         this.cursorFrame = 1;
@@ -37,8 +37,13 @@ public class StateTitle extends State
     {
         if(key.getRef().equals("ENTER"))
         {
-            Application.setState(new StateBoard());
-            //key.release();
+            //if(this.cursorNow == 1) {Application.setState(new StateBoard());}
+            if(this.cursorNow == 1) {Application.setState(new StateScene());}
+            //if(this.cursorNow == 2) {}
+            //if(this.cursorNow == 3) {Application.setState(new StateTutorial());}
+            //if(this.cursorNow == 4) {Application.setState(new StateLegends());}
+            //if(this.cursorNow == 5) {Application.setState(new StateOptions());}
+            if(this.cursorNow == 6) {System.exit(0);}
         }
         if(key.getRef().equals("UP")) {if(this.cursorNow > 1) {this.cursorNow -= 1;}}
         if(key.getRef().equals("DOWN")) {if(this.cursorNow < this.cursorMax) {this.cursorNow += 1;}}
@@ -79,13 +84,16 @@ public class StateTitle extends State
         // Options
         gfx.setFont(Theme.getFont("MENUOPTION"));
         gfx.setColor(Theme.getColour("TEXT"));
-        Drawing.write(gfx, "NEW GAME", 1100, 400, "RIGHT", true);
-        Drawing.write(gfx, "CONTINUE", 1100, 450, "RIGHT", true);
-        Drawing.write(gfx, "QUIT", 1100, 500, "RIGHT", true);
+        Drawing.write(gfx, "NEW GAME", 1100, 350, "RIGHT", true);
+        Drawing.write(gfx, "CONTINUE", 1100, 400, "RIGHT", true);
+        Drawing.write(gfx, "TUTORIAL", 1100, 450, "RIGHT", true);
+        Drawing.write(gfx, "LEGENDS", 1100, 500, "RIGHT", true);
+        Drawing.write(gfx, "OPTIONS", 1100, 550, "RIGHT", true);
+        Drawing.write(gfx, "QUIT", 1100, 600, "RIGHT", true);
         int cursorX = 1135;
         if(cursorFrame == 2) {cursorX = 1134;}
         if(cursorFrame == 4) {cursorX = 1136;}
-        gfx.drawImage(Drawing.getImage("interface/menuCursor1.png"), cursorX, (this.cursorNow * 50) + 328, null);
+        gfx.drawImage(Drawing.getImage("interface/menuCursor1.png"), cursorX, (this.cursorNow * 50) + 278, null);
     }
     
     private void renderTitle(Graphics gfx)

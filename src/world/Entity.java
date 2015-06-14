@@ -315,6 +315,11 @@ public class Entity
         gfx.drawImage(this.getRenderImage(), this.getRenderPosX(), this.getRenderPosY(), null);
     }
     
+    public void renderAt(Graphics gfx, int posX, int posY)
+    {
+        gfx.drawImage(this.getRenderImage(), posX, posY, null);
+    }
+    
     private void renderMesh(Graphics gfx)
     {
         gfx.setColor(Color.CYAN);

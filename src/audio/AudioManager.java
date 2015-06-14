@@ -56,6 +56,9 @@ public class AudioManager
         // Sound Files
         //this.loadFile("audio/sound.froth");
         
+        // Speech Files
+        this.loadFile("audio/speech.froth");
+        
         // Done
         this.loadDone = true;
     }
