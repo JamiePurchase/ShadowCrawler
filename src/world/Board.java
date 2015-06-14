@@ -144,7 +144,7 @@ public class Board
         else
         {
             player -= 1;
-            if(player < 0) {player = this.entityAllies.size();}
+            if(player < 0) {player = this.entityAllies.size() - 1;}
         }
         this.setPlayer(player);
     }
