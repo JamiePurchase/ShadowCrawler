@@ -76,9 +76,6 @@ public class StateBoard extends State
         // Formation Menu
         this.formationMenu = new FormationMenu(this.board, Application.getCampaign());
         this.formationMenuActive = false;
-        
-        // Temp
-        Application.setCampaign(new Campaign());
     }
     
     public void formationEdit()

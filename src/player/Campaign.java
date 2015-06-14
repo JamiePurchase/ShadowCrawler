@@ -3,6 +3,7 @@ package player;
 import item.Inventory;
 import item.Item;
 import java.util.ArrayList;
+import journal.JournalManager;
 
 public class Campaign
 {
@@ -10,9 +11,11 @@ public class Campaign
     private long timeOverall;
     private long timeSession;
     
+    // Game Stats
+    private GameStats statistics;
+    
     // Party
-    private ArrayList<PartyCharacter> partyCharacters;
-    private int partyLeader;
+    private Party party;
     
     // Inventory
     private Inventory inventory;
@@ -20,7 +23,10 @@ public class Campaign
     // Quests
     private QuestLog questLog;
     
-    public Campaign()
+    // Journal
+    private JournalManager journal;
+    
+    public Campaign(String file, GameStats stats, Party party, Inventory items, QuestLog quests, JournalManager journal)
     {
         // NOTE: this is a timestamp of when the user started playing in this session
         // NOTE: if the player views total time (in the menu) we will use this as a reference
@@ -37,7 +43,8 @@ public class Campaign
     
     public void save()
     {
-        
+        // NOTE: consider automatically saving to a temporary set of files every now and then
+        // and before bosses and big cutscenes
     }
     
 }

@@ -4,6 +4,8 @@ import app.Application;
 import gfx.Drawing;
 import input.InputKeyboardKey;
 import java.awt.Graphics;
+import player.Campaign;
+import player.CampaignDao;
 
 public class StateLoader extends State
 {
@@ -14,7 +16,8 @@ public class StateLoader extends State
         this.task = task;
         if(task == "CAMPAIGN_NEW")
         {
-            // NOTE: here we need to build all of the data that accompanies the campaign
+            Campaign campaign = CampaignDao.newCampaign();
+            Application.setCampaign(campaign);
         }
     }
 

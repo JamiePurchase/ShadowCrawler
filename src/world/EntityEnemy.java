@@ -13,6 +13,14 @@ public class EntityEnemy extends Entity
     private ArrayList<Item> rewardItem;
     private int rewardXP;
     
+    // AI Strategy
+    // NOTE: we will need too keep a track of what the plan is and which character is being targetted
+    
+    // Awareness
+    private boolean awareBattle, awareLocation;
+    // NOTE: the idea is that awareBattle means the enemy is not resting, they know the players are nearby
+    // awareLocation means that the enemy can see and can target the party (unique value for each character?)
+    
     public EntityEnemy(String ref, Board board, int tileX, int tileY, Tileset tileset)
     {
         super(ref, board, tileX, tileY, tileset);
@@ -45,6 +53,14 @@ public class EntityEnemy extends Entity
     public int getRewardXP()
     {
         return this.rewardXP;
+    }
+    
+    public void tick()
+    {
+        // Actions and Effects
+        super.tick();
+        
+        // AI Strategy
     }
     
 }

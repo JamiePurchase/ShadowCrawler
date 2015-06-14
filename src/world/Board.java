@@ -577,10 +577,14 @@ public class Board
         }
         
         // Entities
-        if(!this.editor) {this.tickEntity();}
-        else {this.tickEditor();}
-        
-        // NOTE: animated scenery?
+        if(this.editor) {this.tickEditor();}
+        else
+        {
+            this.tickAllies();
+            this.tickEnemies();
+            this.tickVisuals();
+            this.tickDamageMarkers();
+        }
     }
     
     private void tickAllies()
@@ -595,21 +599,6 @@ public class Board
     private void tickEditor()
     {
         // NOTE: may not need this
-    }
-    
-    private void tickEntity()
-    {
-        // Allies
-        this.tickAllies();
-
-        // Enemies
-        this.tickEnemies();
-
-        // Visuals
-        this.tickVisuals();
-        
-        // Damage Markers
-        this.tickDamageMarkers();
     }
     
     public void tickDamageMarkers()

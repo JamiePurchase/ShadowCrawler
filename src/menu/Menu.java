@@ -3,8 +3,10 @@ package menu;
 import app.Application;
 import app.Console;
 import gfx.Drawing;
+import gfx.Theme;
 import input.InputKeyboard;
 import input.InputKeyboardKey;
+import java.awt.Color;
 import java.awt.Graphics;
 import state.StatePause;
 
@@ -67,8 +69,17 @@ public abstract class Menu
     
     public void renderFrame(Graphics gfx)
     {
-        Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/menuPane1bkg.png"), 0, 0, 0.8f);
-        gfx.drawImage(Drawing.getImage("interface/menuPane1border.png"), 0, 0, null);
+        // Pane
+        Drawing.drawImageOpaque(gfx, Drawing.getImage("interface/menuPane2bkg.png"), 0, 0, 0.8f);
+        gfx.drawImage(Drawing.getImage("interface/menuPane2border.png"), 0, 0, null);
+        
+        // Header
+        gfx.setFont(Theme.getFont("MENUHEADER"));
+        gfx.setColor(Color.BLACK);
+        // NOTE: change the colour and add text shadow, while keeping central alignment
+        Drawing.write(gfx, "PAUSE", 683, 90, "CENTER");
+        gfx.setColor(Color.WHITE);
+        Drawing.write(gfx, "PAUSE", 681, 88, "CENTER");
     }
     
     public void tick()
