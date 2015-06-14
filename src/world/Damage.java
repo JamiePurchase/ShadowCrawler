@@ -11,6 +11,16 @@ public class Damage
     private String type;
     private int posX, posY, sizeX, sizeY;
     
+    public Damage(int amount, String type, Rectangle mesh)
+    {
+        this.amount = amount;
+        this.type = type;
+        this.posX = mesh.x;
+        this.posY = mesh.y;
+        this.sizeX = mesh.width;
+        this.sizeY = mesh.height;
+    }
+    
     public Damage(int amount, String type, int posX, int posY, int sizeX, int sizeY)
     {
         this.amount = amount;

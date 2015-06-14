@@ -110,6 +110,11 @@ public class Entity
         return this.action;
     }
     
+    public Board getBoard()
+    {
+        return this.board;
+    }
+    
     public boolean getBusy()
     {
         return this.busy;
@@ -123,6 +128,19 @@ public class Entity
     public Rectangle getMesh()
     {
         return new Rectangle(this.getPosX() - this.meshOffsetX, this.getPosY() - this.meshOffsetY, this.meshSizeX, this.meshSizeY);
+    }
+    
+    public Rectangle getMeshAttack()
+    {
+        int targetX = this.getPosX();
+        int targetY = this.getPosY();
+        int targetW = 64;
+        int targetH = 64;
+        if(this.face.equals("E")) {targetX += 64;}
+        if(this.face.equals("N")) {targetY -= 64;}
+        if(this.face.equals("S")) {targetY += 64;}
+        if(this.face.equals("W")) {targetX -= 64;}
+        return new Rectangle(targetX, targetY, targetW, targetH);
     }
     
     private Rectangle getMeshTarget(String direction)
@@ -281,12 +299,37 @@ public class Entity
     
     private void movePush(String direction)
     {
+        Console.echo(this.board.getIntersect(this.getMeshTarget(direction)));
+        
+        this.face = direction;
         if(this.board.getIntersect(this.getMeshTarget(direction)) == null)
         {
+            Console.echo(this.ref + " has been pushed in direction " + direction);
             if(this.face == "N") {this.posY -= 4;}
             if(this.face == "S") {this.posY += 4;}
             if(this.face == "E") {this.posX += 4;}
             if(this.face == "W") {this.posX -= 4;}
+        }
+    }
+    
+    public void moveTowards(Entity target)
+    {
+        this.moveTowards(target.getPosX(), target.getPosY());
+    }
+    
+    public void moveTowards(int targetX, int targetY)
+    {
+        int distanceX = Math.abs(this.posX - targetX);
+        int distanceY = Math.abs(this.posY - targetY);
+        if(distanceX > distanceY)
+        {
+            if(this.posX > targetX) {this.movePush("W");}
+            else {this.movePush("E");}
+        }
+        else
+        {
+            if(this.posY > targetY) {this.movePush("N");}
+            else {this.movePush("S");}
         }
     }
     
@@ -386,15 +429,7 @@ public class Entity
             this.actionRemain = false;
             this.actionDamage = true;
             this.actionDamageFrame = 5;
-            int targetX = this.getPosX();
-            int targetY = this.getPosY();
-            int targetW = 64;
-            int targetH = 64;
-            if(this.face.equals("E")) {targetX += 64;}
-            if(this.face.equals("N")) {targetY -= 64;}
-            if(this.face.equals("S")) {targetY += 64;}
-            if(this.face.equals("W")) {targetX -= 64;}
-            this.actionDamageObject = new Damage(25, "MELEE", targetX, targetY, targetW, targetH);
+            this.actionDamageObject = new Damage(25, "MELEE", this.getMeshAttack());
             this.busy = true;
         }
         

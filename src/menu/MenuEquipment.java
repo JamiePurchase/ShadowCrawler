@@ -54,10 +54,10 @@ public class MenuEquipment extends Menu
         // Equipment
         gfx.setFont(Theme.getFont("MENUOPTION"));
         gfx.setColor(Theme.getColour("TEXT"));
-        gfx.drawString("Weapon", 480, 150);
-        gfx.drawString("Armour", 480, 250);
-        gfx.drawString("Amulet", 480, 350);
-        gfx.drawString("Ring", 480, 450);
+        gfx.drawString("Weapon", 380, 150);
+        gfx.drawString("Armour", 380, 250);
+        gfx.drawString("Amulet", 380, 350);
+        gfx.drawString("Ring", 380, 450);
         
         // Portrait
         this.renderPortrait(gfx);

@@ -1,6 +1,7 @@
 package world;
 
 import app.Application;
+import app.Console;
 import gfx.Tileset;
 import item.Item;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class EntityEnemy extends Entity
     private int rewardXP;
     
     // AI Strategy
+    private Entity aiTarget;
+    private boolean aiReady;
     // NOTE: we will need too keep a track of what the plan is and which character is being targetted
     
     // Awareness
@@ -31,6 +34,10 @@ public class EntityEnemy extends Entity
         this.rewardItem = new ArrayList<Item>();
         //this.rewardItem.add(new ItemWeapon());
         this.rewardXP = 24;
+        
+        // AI Strategy
+        this.aiTarget = null;
+        this.aiReady = false;
     }
     
     private void death()
@@ -61,6 +68,20 @@ public class EntityEnemy extends Entity
         super.tick();
         
         // AI Strategy
+        if(this.aiReady)
+        {
+            if(this.getMeshAttack().intersects(this.aiTarget.getMesh()))
+            {
+                // Attack attempt
+                this.attack();
+            }
+            else {this.moveTowards(this.aiTarget);}
+        }
+        else
+        {
+            this.aiTarget = super.getBoard().getEntityAlly(0);
+            this.aiReady = true;
+        }
     }
     
 }

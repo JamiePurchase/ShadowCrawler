@@ -201,9 +201,19 @@ public class Board
         }
     }
     
+    public Entity getEntityAlly(int id)
+    {
+        return this.entityAllies.get(id);
+    }
+    
     public int getEntityAllyCount()
     {
         return this.entityAllies.size();
+    }
+    
+    public Entity getEntityEnemy(int id)
+    {
+        return this.entityEnemies.get(id);
     }
     
     public int getEntityEnemyCount()
@@ -224,8 +234,17 @@ public class Board
     
     public String getIntersect(Rectangle rect)
     {
+        return this.getIntersect(rect, null);
+    }
+    
+    public String getIntersect(Rectangle rect, String refIgnore)
+    {
+        // Allies
+        String result = getIntersectAllies(rect, refIgnore);
+        if(result != null) {return "ALY|" + result;}
+        
         // Enemies
-        String result = getIntersectEnemies(rect);
+        result = getIntersectEnemies(rect, refIgnore);
         if(result != null) {return "ENE|" + result;}
         
         // Containers
@@ -237,6 +256,21 @@ public class Board
         if(result != null) {return "VCT|" + result;}
         
         // No Intersection
+        return null;
+    }
+    
+    public String getIntersectAllies(Rectangle rect, String refIgnore)
+    {
+        for(int a = 0; a < entityAllies.size(); a++)
+        {
+            if(entityAllies.get(a).getMesh().intersects(rect))
+            {
+                if(refIgnore != null && !entityAllies.get(a).getRef().equals(refIgnore))
+                {
+                    return entityAllies.get(a).getRef();
+                }
+            }
+        }
         return null;
     }
     
@@ -252,13 +286,16 @@ public class Board
         return null;
     }
     
-    public String getIntersectEnemies(Rectangle rect)
+    public String getIntersectEnemies(Rectangle rect, String refIgnore)
     {
         for(int e = 0; e < entityEnemies.size(); e++)
         {
             if(entityEnemies.get(e).getMesh().intersects(rect))
             {
-                return entityEnemies.get(e).getRef();
+                if(refIgnore != null && !entityEnemies.get(e).getRef().equals(refIgnore))
+                {
+                    return entityEnemies.get(e).getRef();
+                }
             }
         }
         return null;
