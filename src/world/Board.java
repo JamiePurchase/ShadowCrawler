@@ -88,7 +88,7 @@ public class Board
         
         // Entities: Enemies
         this.entityEnemies = new ArrayList<EntityEnemy>();
-        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 0, 0, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
+        this.entityEnemies.add(new EntityEnemy("SKELETON1", this, 512, 576, new Tileset("spr|crt|Skeleton", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton.png"), 64, 64, 13, 42)));
         
         // Entities: Containers
         this.entityContainers = new ArrayList<EntityContainer>();
@@ -265,10 +265,14 @@ public class Board
         {
             if(entityAllies.get(a).getMesh().intersects(rect))
             {
-                if(refIgnore != null && !entityAllies.get(a).getRef().equals(refIgnore))
+                if(refIgnore != null)
                 {
-                    return entityAllies.get(a).getRef();
+                    if(!entityAllies.get(a).getRef().equals(refIgnore))
+                    {
+                        return entityAllies.get(a).getRef();
+                    }
                 }
+                else {return entityAllies.get(a).getRef();}
             }
         }
         return null;
@@ -292,10 +296,14 @@ public class Board
         {
             if(entityEnemies.get(e).getMesh().intersects(rect))
             {
-                if(refIgnore != null && !entityEnemies.get(e).getRef().equals(refIgnore))
+                if(refIgnore != null)
                 {
-                    return entityEnemies.get(e).getRef();
+                    if(!entityEnemies.get(e).getRef().equals(refIgnore))
+                    {
+                        return entityEnemies.get(e).getRef();
+                    }
                 }
+                else {return entityEnemies.get(e).getRef();}
             }
         }
         return null;

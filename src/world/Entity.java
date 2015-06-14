@@ -143,6 +143,11 @@ public class Entity
         return new Rectangle(targetX, targetY, targetW, targetH);
     }
     
+    public boolean getMeshRender()
+    {
+        return meshRender;
+    }
+    
     private Rectangle getMeshTarget(String direction)
     {
         int posX = this.getPosX();
@@ -155,6 +160,11 @@ public class Entity
     }
     
     private BufferedImage getRenderImage()
+    {
+        return this.getRenderImage(null);
+    }
+    
+    public BufferedImage getRenderImage(Tileset tileset)
     {
         // NOTE: can we assume that all entities will have tilesets laid-out in the exact fashion?
         // NOTE: if not, we need to inject specific data for every entity we create
@@ -179,7 +189,7 @@ public class Entity
             if(this.face.equals("N")) {imgY = 1;}
             if(this.face.equals("W")) {imgY = 2;}
             if(this.face.equals("E")) {imgY = 4;}
-            return new Tileset("spr|chr|Jakken_Sword5", Drawing.getImage("spritesheet/character/Jakken/Jakken_Sword5.png"), 192, 192, 6, 4).getTileAt(imgX, imgY);
+            return tileset.getTileAt(imgX, imgY);
         }
         if(this.action.equals("CAST"))
         {
@@ -220,12 +230,12 @@ public class Entity
         return this.sprite.getTileAt(tileX, tileY);
     }
     
-    private int getRenderPosX()
+    public int getRenderPosX()
     {
         return this.board.getScreenPosX(this.posX) - this.actionOffsetX;
     }
     
-    private int getRenderPosY()
+    public int getRenderPosY()
     {
         return this.board.getScreenPosY(this.posY) - this.actionOffsetY;
     }
@@ -299,17 +309,15 @@ public class Entity
     
     private void movePush(String direction)
     {
-        Console.echo(this.board.getIntersect(this.getMeshTarget(direction)));
-        
         this.face = direction;
-        if(this.board.getIntersect(this.getMeshTarget(direction)) == null)
+        if(this.board.getIntersect(this.getMeshTarget(direction), this.getRef()) == null)
         {
-            Console.echo(this.ref + " has been pushed in direction " + direction);
             if(this.face == "N") {this.posY -= 4;}
             if(this.face == "S") {this.posY += 4;}
             if(this.face == "E") {this.posX += 4;}
             if(this.face == "W") {this.posX -= 4;}
         }
+        // NOTE: if an enemy entity is colliding with something, we must reroute
     }
     
     public void moveTowards(Entity target)
@@ -363,7 +371,7 @@ public class Entity
         gfx.drawImage(this.getRenderImage(), posX, posY, null);
     }
     
-    private void renderMesh(Graphics gfx)
+    public void renderMesh(Graphics gfx)
     {
         gfx.setColor(Color.CYAN);
         gfx.drawRect(this.board.getScreenPosX(this.getMesh().x), this.board.getScreenPosY(this.getMesh().y), this.getMesh().width, this.getMesh().height);

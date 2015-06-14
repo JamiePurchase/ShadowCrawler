@@ -2,8 +2,10 @@ package world;
 
 import app.Application;
 import app.Console;
+import gfx.Drawing;
 import gfx.Tileset;
 import item.Item;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import maths.Mathematics;
 
@@ -24,6 +26,9 @@ public class EntityEnemy extends Entity
     // NOTE: the idea is that awareBattle means the enemy is not resting, they know the players are nearby
     // awareLocation means that the enemy can see and can target the party (unique value for each character?)
     
+    // Temp
+    private Tileset animAttack;
+    
     public EntityEnemy(String ref, Board board, int tileX, int tileY, Tileset tileset)
     {
         super(ref, board, tileX, tileY, tileset);
@@ -38,6 +43,9 @@ public class EntityEnemy extends Entity
         // AI Strategy
         this.aiTarget = null;
         this.aiReady = false;
+        
+        // TEMP
+        animAttack = new Tileset("spr|ene|Skeleton_Mace", Drawing.getImage("spritesheet/creature/Skeleton/Skeleton_Mace.png"), 192, 192, 6, 4);
     }
     
     private void death()
@@ -62,17 +70,24 @@ public class EntityEnemy extends Entity
         return this.rewardXP;
     }
     
+    public void render(Graphics gfx)
+    {
+        if(getMeshRender()) {super.renderMesh(gfx);}
+        gfx.drawImage(super.getRenderImage(this.animAttack), super.getRenderPosX(), super.getRenderPosY(), null);
+    }
+    
     public void tick()
     {
         // Actions and Effects
         super.tick();
         
         // AI Strategy
-        if(this.aiReady)
+        if(this.aiReady && !this.getBusy())
         {
             if(this.getMeshAttack().intersects(this.aiTarget.getMesh()))
             {
                 // Attack attempt
+                Console.echoRed(this.getRef() + " is attacking!");
                 this.attack();
             }
             else {this.moveTowards(this.aiTarget);}

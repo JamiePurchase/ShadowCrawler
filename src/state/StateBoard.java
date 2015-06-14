@@ -154,7 +154,7 @@ public class StateBoard extends State
     public void renderDisplay(Graphics gfx)
     {
         // Character
-        this.hudCharacter.render(gfx);
+        //this.hudCharacter.render(gfx);
         
         // Equipment
         
